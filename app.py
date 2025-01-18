@@ -240,21 +240,21 @@ def handle_modifications():
 
         # Convertir le type de la colonne
         try:
-          if new_col_type == "int":
-            df[new_col_name] = df[new_col_name].astype(int)
-          elif new_col_type == "float":
-            df[new_col_name] = df[new_col_name].astype(float)
-          elif new_col_type == "str":
-            df[new_col_name] = df[new_col_name].astype(str)
-          elif new_col_type == "bool":
-            df[new_col_name] = df[new_col_name].astype(bool)
-          else:
-            print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
+          match new_col_type:
+            case "int":
+              df[new_col_name] = df[new_col_name].astype(int)
+            case "float":
+              df[new_col_name] = df[new_col_name].astype(float)
+            case "str":
+              df[new_col_name] = df[new_col_name].astype(str)
+            case "bool":
+              df[new_col_name] = df[new_col_name].astype(bool)
+            case _:
+              print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
 
           print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
         except Exception as e:
           print(f"💣 Erreur lors de la conversion : {e}")
-
 
       # Demander si l'utilisateur souhaite modifier une autre colonne
       response = input("Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
