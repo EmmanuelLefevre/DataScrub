@@ -11,17 +11,39 @@ load_dotenv()
 
 # Fonction pour choisir le fichier CSV dans le dossier "data"
 def select_file():
-  # Créer une fenêtre tkinter
-  Tk().withdraw()
+  # Chemin du dossier "data"
+  data_dir = os.path.join(os.getcwd(), "data")
 
-  file_path = askopenfilename(
-    title="Choisir un fichier CSV",
-    filetypes=[("Fichiers CSV", "*.csv")],
-    # Répertoire initial
-    initialdir=os.path.join(os.getcwd(), "data")
-  )
+  # Vérifier si le dossier "data" existe
+  if not os.path.exists(data_dir):
+    print("⚠️ Le dossier 'data' est introuvable... Créer le dossier et y ajouter un fichier au format CSV!")
+    sys.exit(0)
 
-  return file_path
+  # Lister les fichiers CSV dans le dossier "data"
+  csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
+
+  # Aucun fichier CSV trouvé
+  if not csv_files:
+    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data'. Ajouter un fichier avant de relancer le programme!")
+    sys.exit(0)
+
+  # Un seul fichier CSV trouvé => le charger automatiquement
+  if len(csv_files) == 1:
+    return os.path.join(data_dir, csv_files[0])
+
+  # Si plusieurs fichiers => ouvrir la fenêtre de sélection
+  else:
+    # Créer une fenêtre tkinter
+    Tk().withdraw()
+
+    file_path = askopenfilename(
+      title="Choisir un fichier CSV",
+      filetypes=[("Fichiers CSV", "*.csv")],
+      # Répertoire initial
+      initialdir=os.path.join(os.getcwd(), "data")
+    )
+
+    return file_path
 
 # Fonction pour enregistrer le fichier modifié
 def save_file(df):
