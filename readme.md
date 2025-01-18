@@ -2,7 +2,7 @@
 
 ## SOMMAIRE
 - [INTRODUCTION](#introduction)
-- [PYTHON](#installer-python)
+- [PYTHON](#python)
 - [REQUIREMENTS](#requirements)
 - [PROCEDURE](#procedure)
 
