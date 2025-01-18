@@ -11,12 +11,10 @@ DataScrub a pour objectif de nettoyer un jeu de données en éliminant les incoh
 Ce nettoyage est essentiel pour garantir la qualité et la fiabilité des analyses ultérieures ou des modèles d'apprentissage automatique qui seront utilisés sur ces données.  
 
 ## PYTHON
-[Télécharger Python 3.13.1](https://www.python.org/downloads/)
+[Télécharger Python 3.13.1](https://www.python.org/downloads/)  
+⚠️ "Customize installation" > Cocher l'option "tcl/tk" et décocher "IDLE".  
+Assurez-vous que les options "Install for all users" et "Add Python to PATH" sont activées.
 
-⚠️ Cocher l'option "tcl/tk and IDLE". Si vous avez installé python sans cette option =>
-```bash
-pip install tk
-```
 - Vérifier l'installation de Python
 ```bash
 python --version
