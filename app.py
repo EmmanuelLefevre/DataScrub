@@ -39,7 +39,7 @@ def save_file(df):
   if save_path:
     # Sauvegarder le DataFrame au chemin sélectionné
     df.to_csv(save_path, index=False)
-    print(f"✔️ Modifications enregistrées sous: {save_path}")
+    print(f"📄 Fichier enregistré sous: {save_path}")
   else:
     print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
@@ -198,6 +198,9 @@ def handle_modifications():
 
       # Demander si l'utilisateur souhaite modifier une autre colonne
       response = input("Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
+      # Si réponse vide
+      if not response:
+        response = "O"
 
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
