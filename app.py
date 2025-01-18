@@ -110,11 +110,14 @@ if response in ["O", "o"]:
           "Valeurs manquantes": missing_values_count
         })
         print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
-      else:
-        print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées!")
 
     else:
       print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
+
+    # Vérifier si toutes les lignes ont été nettoyées
+    if not df.isnull().any().any():
+      print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées!")
+      break
 
     # Demander si l'utilisateur souhaite continuer
     response = input("Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
@@ -127,6 +130,7 @@ if response in ["O", "o"]:
 
 # Afficher le cumul de lignes supprimées
 plural = "s" if total_rows_removed > 1 else ""
+print("\n")
 print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
 print("\n")
 
