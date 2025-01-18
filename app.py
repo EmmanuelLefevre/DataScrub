@@ -48,9 +48,13 @@ response = input("🏁 Souhaitez-vous supprimer les lignes comportant des valeur
 if not response:
   response = "O"
 
+# Initialiser le total des lignes supprimées
+total_rows_removed = 0
+
 if response in ["O", "o"]:
   # Identifier les colonnes contenant des valeurs manquantes
   columns_with_missing = df.columns[df.isnull().any()].tolist()
+
   # Si des colonnes contiennent des valeurs manquantes
   if columns_with_missing:
     # Calculer le nombre de valeurs manquantes pour chaque colonne
@@ -62,7 +66,7 @@ if response in ["O", "o"]:
       "Valeurs manquantes": missing_values_count
     })
 
-    # Afficher le tableau
+    # Afficher le tableau initial
     print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
   else:
     print("✔️ Aucune colonne avec des valeurs manquantes.")
@@ -89,21 +93,41 @@ if response in ["O", "o"]:
       # Calculer le nombre de lignes supprimées
       rows_removed = before_cleaning_nullables - after_cleaning_nullables
 
+      # Ajouter le nombre de lignes supprimées au total
+      total_rows_removed += rows_removed
+
       if rows_removed == 1:
         print(f"✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.")
       else:
         print(f"✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.")
+
+      # Recalculer les colonnes avec des valeurs manquantes et afficher le tableau mis à jour
+      columns_with_missing = df.columns[df.isnull().any()].tolist()
+      if columns_with_missing:
+        missing_values_count = df[columns_with_missing].isnull().sum()
+        missing_values_table = pd.DataFrame({
+          "Colonne": columns_with_missing,
+          "Valeurs manquantes": missing_values_count
+        })
+        print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
+      else:
+        print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées!")
+
     else:
       print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
 
     # Demander si l'utilisateur souhaite continuer
     response = input("Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
+    # Si réponse vide
+    if not response:
+      response = "O"
     if response not in ["O", "o"]:
       print("\n")
       break
 
-# Afficher le nombre de lignes après suppression
-print(f"Nombre de lignes après suppression des valeurs manquantes : {len(df)}. Nombre de lignes restantes : {after_cleaning_nullables}")
+# Afficher le cumul de lignes supprimées
+plural = "s" if total_rows_removed > 1 else ""
+print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
 print("\n")
 
 # Demander à l'utilisateur s'il souhaite modifier les données
