@@ -43,6 +43,18 @@ def save_file(df):
   else:
     print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
+# Fonction pour supprimer une colonne de toutes les lignes et de l'entête
+def delete_column():
+  try:
+    # Supprimer une colonne
+    response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
+
+
+
+  except KeyboardInterrupt:
+    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
+    sys.exit(0)
+
 # Fonction pour gérer le processus de nettoyage des valeurs manquantes
 def handle_missing_values():
   try:
@@ -146,7 +158,7 @@ def handle_missing_values():
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
 
-# Fonction pour demander à l'utilisateur s'il souhaite modifier les données
+# Fonction pour demander à l'utilisateur s'il souhaite modifier les données et leur type associé
 def handle_modifications():
   try:
     # Demander à l'utilisateur s'il souhaite modifier les données
@@ -245,6 +257,14 @@ if file_path:
   print("\n")
 
   try:
+    # Demander à l'utilisateur s'il souhaite supprimer une colonne
+    delete_column()
+    has_modifications = True
+  except KeyboardInterrupt:
+    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
+    sys.exit(0)
+
+  try:
     # Demander à l'utilisateur s'il souhaite supprimer les lignes comportant des valeurs manquantes
     handle_missing_values()
     has_modifications = True
@@ -253,7 +273,7 @@ if file_path:
     sys.exit(0)
 
   try:
-    # Demander à l'utilisateur s'il souhaite modifier les données
+    # Demander à l'utilisateur s'il souhaite modifier les données et leur type associé
     handle_modifications()
     has_modifications = True
   except KeyboardInterrupt:
