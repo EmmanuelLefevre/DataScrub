@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 # Charger variables d'environnement
 load_dotenv()
 
-# Fonction pour choisir le fichier CSV dans le dossier "data"
+#######################################################################
+##### Fonction pour choisir le fichier CSV dans le dossier "data" #####
+#######################################################################
 def select_file():
   # Chemin du dossier "data"
   data_dir = os.path.join(os.getcwd(), "data")
@@ -45,7 +47,9 @@ def select_file():
 
     return file_path
 
-# Fonction pour enregistrer le fichier modifié
+########################################################
+##### Fonction pour enregistrer le fichier modifié #####
+########################################################
 def save_file(df):
   # Créer une fenêtre tkinter
   Tk().withdraw()
@@ -71,13 +75,32 @@ def delete_column():
     # Supprimer une colonne
     response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
 
+    # Si réponse vide
+    if not response:
+      response = "O"
 
+    if response in ["O", "o"]:
+      col_to_delete = input("🏁 Indiquez le nom de la colonne à supprimer (ou 'annuler' pour ignorer) : ").strip()
+
+      if col_to_delete.lower() == "annuler":
+        print("❌ Suppression annulée par l'utilisateur.")
+        return
+
+      # Vérifier si la colonne existe dans le DataFrame
+      if col_to_delete in df.columns:
+        # Supprimer la colonne du DataFrame
+        df.drop(columns=[col_to_delete], inplace=True)
+        print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
+      else:
+        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas dans le fichier CSV.")
 
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
 
-# Fonction pour gérer le processus de nettoyage des valeurs manquantes
+################################################################################
+##### Fonction pour gérer le processus de nettoyage des valeurs manquantes #####
+################################################################################
 def handle_missing_values():
   try:
     # Eliminer les lignes comportant des valeurs manquantes
@@ -180,7 +203,9 @@ def handle_missing_values():
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
 
-# Fonction pour demander à l'utilisateur s'il souhaite modifier les données et leur type associé
+##########################################################################################################
+##### Fonction pour demander à l'utilisateur s'il souhaite modifier les données et leur type associé #####
+##########################################################################################################
 def handle_modifications():
   try:
     # Demander à l'utilisateur s'il souhaite modifier les données
@@ -240,6 +265,9 @@ def handle_modifications():
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
 
+################
+##### Main #####
+################
 # Demander à l'utilisateur de choisir un fichier CSV
 file_path = select_file()
 
