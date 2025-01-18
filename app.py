@@ -15,9 +15,10 @@ PATH_DATAMODEL = os.getenv('DATAMODEL')
 df = pd.read_csv(PATH_DATAMODEL)
 
 # Afficher nombre de lignes du data model
-print("================================")
+print("\n")
+print("=============================")
 print(f"🔗 Data model: {len(df)} lignes")
-print("================================")
+print("=============================")
 
 # Nettoyer les doublons
 before_cleaning_duplicates = len(df)
@@ -31,15 +32,81 @@ if before_cleaning_duplicates == after_cleaning_duplicates:
 else:
   plural = "s" if duplicates_removed > 1 else ""
   print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
+print("\n")
 
 # Afficher les colonnes du CSV avec le type associé
 print("=========================")
 print("🚀 Tableau des données 🚀")
 print("=========================")
 print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type"], tablefmt="grid"))
+print("\n")
+
+# Eliminer les lignes comportant des valeurs manquantes
+response = input("🏁 Souhaitez-vous supprimer les lignes comportant des valeurs manquantes ? (O/n): ").strip().lower()
+
+# Si réponse vide
+if not response:
+  response = "O"
+
+if response in ["O", "o"]:
+  # Identifier les colonnes contenant des valeurs manquantes
+  columns_with_missing = df.columns[df.isnull().any()].tolist()
+  # Si des colonnes contiennent des valeurs manquantes
+  if columns_with_missing:
+    # Calculer le nombre de valeurs manquantes pour chaque colonne
+    missing_values_count = df[columns_with_missing].isnull().sum()
+
+    # Créer un tableau à afficher avec le nombre de valeurs manquantes par colonne
+    missing_values_table = pd.DataFrame({
+      "Colonne": columns_with_missing,
+      "Valeurs manquantes": missing_values_count
+    })
+
+    # Afficher le tableau
+    print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
+  else:
+    print("✔️ Aucune colonne avec des valeurs manquantes.")
+
+  # Demander à l'utilisateur de choisir quelles colonnes nettoyer
+  while True:
+    col_to_clean = input(f"Pour quelle colonne souhaitez-vous effectuer cette opération ? ('fin' pour terminer): ").strip()
+
+    if col_to_clean == 'fin':
+      print("\n")
+      break
+
+    # Vérifier si la colonne existe
+    if col_to_clean in columns_with_missing:
+      # Calculer le nombre de lignes avant la suppression
+      before_cleaning_nullables = len(df)
+
+      # Supprimer les lignes où la colonne spécifiée a des valeurs manquantes
+      df.dropna(subset=[col_to_clean], inplace=True)
+
+      # Calculer le nombre de lignes après la suppression
+      after_cleaning_nullables = len(df)
+
+      # Calculer le nombre de lignes supprimées
+      rows_removed = before_cleaning_nullables - after_cleaning_nullables
+
+      if rows_removed == 1:
+        print(f"✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.")
+      else:
+        print(f"✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.")
+    else:
+      print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
+
+    # Demander si l'utilisateur souhaite continuer
+    response = input("Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
+    if response not in ["O", "o"]:
+      print("\n")
+      break
+
+# Afficher le nombre de lignes après suppression
+print(f"Nombre de lignes après suppression des valeurs manquantes : {len(df)}. Nombre de lignes restantes : {after_cleaning_nullables}")
+print("\n")
 
 # Demander à l'utilisateur s'il souhaite modifier les données
-print("\n")
 response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
 # Si réponse vide
 if not response:
