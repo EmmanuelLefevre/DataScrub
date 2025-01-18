@@ -69,7 +69,9 @@ def save_file(df):
   else:
     print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
-# Fonction pour supprimer une colonne de toutes les lignes et de l'entête
+###################################################################################
+##### Fonction pour supprimer une colonne de toutes les lignes et de l'entête #####
+###################################################################################
 def delete_column():
   try:
     # Supprimer une colonne
@@ -80,19 +82,18 @@ def delete_column():
       response = "O"
 
     if response in ["O", "o"]:
-      col_to_delete = input("🏁 Indiquez le nom de la colonne à supprimer (ou 'annuler' pour ignorer) : ").strip()
+      col_to_delete = input("🏁 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
-      if col_to_delete.lower() == "annuler":
-        print("❌ Suppression annulée par l'utilisateur.")
+      if col_to_delete == "fin":
+        print("\n")
         return
 
-      # Vérifier si la colonne existe dans le DataFrame
+      # Vérifier si la colonne existe dans le CSV
       if col_to_delete in df.columns:
-        # Supprimer la colonne du DataFrame
         df.drop(columns=[col_to_delete], inplace=True)
         print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
       else:
-        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas dans le fichier CSV.")
+        print(f"⚠️ Cette colonne n'existe pas!")
 
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
