@@ -7,7 +7,7 @@
 - [PROCEDURE](#procedure)
 
 ## INTRODUCTION
-DataScrub a pour objectif de nettoyer un jeu de données (en format CSV) en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement:  
+DataScrub a pour objectif de nettoyer un jeu de données (en format CSV) en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
 - Elimination des doublons
 - Elimination des lignes comportants des valeurs manquantes  
 
@@ -17,7 +17,8 @@ De plus il est possible de changer le nom des colonnes ainsi que leur type assoc
 ## PYTHON
 [Télécharger Python 3.13.1](https://www.python.org/downloads/)  
 
-⚠️ "Customize installation" > Cocher les options =>  
+⚠️ "Customize installation"  
+Cocher les options =>  
 - "pip"  
 - "tcl/tk and IDLE"  
 - "py launcher"  
