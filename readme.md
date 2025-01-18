@@ -9,7 +9,7 @@
 ## INTRODUCTION
 DataScrub a pour objectif de nettoyer un jeu de données (en format CSV) en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement:  
 - Elimination des doublons
-- Elimination des lignes comportants des valeurs manquantes
+- Elimination des lignes comportants des valeurs manquantes  
 Ce nettoyage est essentiel pour garantir la qualité et la fiabilité des analyses ultérieures ou des modèles d'apprentissage automatique qui seront utilisés sur ces données.  
 De plus il est possible de changer le nom des colonnes ainsi que leur type associé.
 
