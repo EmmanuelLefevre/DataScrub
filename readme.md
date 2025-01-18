@@ -38,6 +38,7 @@ pip --version
 ## REQUIREMENTS
 - Pandas
 - Python-dotenv
+- Tabulate
 
 ## PROCEDURE
 1. Installer les librairies (en local dans python)
