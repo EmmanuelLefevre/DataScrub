@@ -18,6 +18,7 @@ De plus il est possible de changer le nom des colonnes ainsi que leur type assoc
 [Télécharger Python 3.13.1](https://www.python.org/downloads/)  
 
 ⚠️ "Customize installation"  
+
 Cocher les options =>  
 - "pip"  
 - "tcl/tk and IDLE"  
