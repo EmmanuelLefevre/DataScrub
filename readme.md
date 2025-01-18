@@ -7,7 +7,7 @@
 - [PROCEDURE](#procedure)
 
 ## INTRODUCTION
-DataScrub a pour objectif de nettoyer un jeu de données (en format CSV) en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
+DataScrub a pour objectif de nettoyer un jeu de données (DataFrame) au format CSV en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
 - Elimination des doublons
 - Elimination des lignes comportants des valeurs manquantes  
 
