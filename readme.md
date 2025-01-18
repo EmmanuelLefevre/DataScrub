@@ -52,7 +52,8 @@ pip list
 ```bash
 cp .env.template .env
 ```
-3. Lancer l'application python
+3. Placer votre fichier CSV dans le dossier (data) prévu à cet effet...
+4. Lancer l'application python
 ```bash
 python app.py
 ```
