@@ -276,10 +276,10 @@ if file_path:
   # Charger le fichier CSV
   df = pd.read_csv(file_path)
 
-  # Afficher nombre de lignes du data model
+  # Afficher nombre de lignes du DataFrame
   print("\n")
   print("=============================")
-  print(f"🔗 Data model: {len(df)} lignes")
+  print(f"🔗 DataFrame: {len(df)} lignes")
   print("=============================")
 
   # Variable pour suivre si des modifications ont été effectuées
