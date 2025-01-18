@@ -13,7 +13,13 @@ Ce nettoyage est essentiel pour garantir la qualité et la fiabilité des analys
 ## PYTHON
 [Télécharger Python 3.13.1](https://www.python.org/downloads/)  
 
-⚠️ "Customize installation" > Cocher l'option "tcl/tk and IDLE" et assurez-vous de même pour l'option "Add Python to PATH".
+⚠️ "Customize installation" > Cocher les options =>  
+"pip"  
+"tcl/tk and IDLE"  
+"py launcher"  
+Puis dans la seconde fenêtre =>  
+"Associate files with Python"  
+"Add Python to environment variables".  
 
 - Vérifier l'installation de Python
 ```bash
