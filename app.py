@@ -14,6 +14,24 @@ PATH_DATAMODEL = os.getenv('DATAMODEL')
 # Charger fichier CSV
 df = pd.read_csv(PATH_DATAMODEL)
 
+# Afficher nombre de lignes du data model
+print("================================")
+print(f"🔗 Data model: {len(df)} lignes")
+print("================================")
+
+# Nettoyer les doublons
+before_cleaning_duplicates = len(df)
+df.drop_duplicates(inplace=True)
+after_cleaning_duplicates = len(df)
+
+duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
+
+if before_cleaning_duplicates == after_cleaning_duplicates:
+  print("✔️ Aucun doublon trouvé.")
+else:
+  plural = "s" if duplicates_removed > 1 else ""
+  print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
+
 # Afficher les colonnes du CSV avec le type associé
 print("=========================")
 print("🚀 Tableau des données 🚀")
