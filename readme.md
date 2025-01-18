@@ -7,7 +7,7 @@
 - [PROCEDURE](#procedure)
 
 ## INTRODUCTION
-DataScrub a pour objectif de nettoyer un jeu de données en éliminant les incohérences, les valeurs manquantes et les doublons. Il applique une série d'opérations de prétraitement, telles que la normalisation des colonnes, la gestion des valeurs aberrantes et l'encodage des variables catégorielles.  
+DataScrub a pour objectif de nettoyer un jeu de données (en format CSV) en éliminant les incohérences, les valeurs manquantes et les doublons. Il applique une série d'opérations de prétraitement, telles que la normalisation des colonnes, la gestion des valeurs aberrantes et l'encodage des variables catégorielles.  
 Ce nettoyage est essentiel pour garantir la qualité et la fiabilité des analyses ultérieures ou des modèles d'apprentissage automatique qui seront utilisés sur ces données.  
 
 ## PYTHON
@@ -52,7 +52,7 @@ pip list
 ```bash
 cp .env.template .env
 ```
-3. Placer votre fichier CSV dans le dossier (data) prévu à cet effet...
+3. Placer votre modèle de données .csv dans le dossier (data) prévu à cet effet...
 4. Lancer l'application python
 ```bash
 python app.py
