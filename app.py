@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from tabulate import tabulate
 from tkinter import Tk
 from tkinter.filedialog import askdirectory
 from dotenv import load_dotenv
@@ -14,63 +15,56 @@ PATH_DATAMODEL = os.getenv('DATAMODEL')
 df = pd.read_csv(PATH_DATAMODEL)
 
 # Afficher les colonnes du CSV avec le type associé
-print("Colonnes et types de données associés :")
-print(df.dtypes)
+print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type de données"], tablefmt="grid"))
 
 # Demander à l'utilisateur s'il souhaite modifier les données
-reponse = input("\nSouhaitez-vous modifier ces données ? (oui/non) : ").strip().lower()
+response = input("\nSouhaitez-vous modifier ces données ? (O/n): ").strip().lower()
+# Si réponse vide
+if not response:
+  response = "O"
 
-if reponse == "oui" or reponse == "o":
-  print("\nOptions disponibles :")
-  print("1. Renommer une colonne")
-  print("2. Changer le type de données d'une colonne")
-  choix = input("Entrez le numéro de l'option souhaitée : ").strip()
+while response in ["O","o"]:
+  col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
-  if choix == "1":
-    ancienne_colonne = input("Entrez le nom de la colonne à renommer : ").strip()
-    nouvelle_colonne = input("Entrez le nouveau nom pour cette colonne : ").strip()
-    if ancienne_colonne in df.columns:
-      df.rename(columns={ancienne_colonne: nouvelle_colonne}, inplace=True)
-      print(f"La colonne '{ancienne_colonne}' a été renommée en '{nouvelle_colonne}'.")
-    else:
-      print("Nom de colonne invalide.")
+  # Vérifier si la colonne existe
+  while col_to_modify not in df.columns:
+    print(f"⚠️ La colonne '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide!")
+    col_to_modify = input("💬 Quelle colonne souhaitez-vous modifier ? ").strip()
 
-  elif choix == "2":
-    colonne = input("Entrez le nom de la colonne dont vous souhaitez changer le type : ").strip()
-    nouveau_type = input("Entrez le nouveau type (exemple : int, float, str) : ").strip()
-    if colonne in df.columns:
-      try:
-        df[colonne] = df[colonne].astype(nouveau_type)
-        print(f"Le type de la colonne '{colonne}' a été changé en '{nouveau_type}'.")
-      except Exception as e:
-        print(f"Erreur lors du changement de type : {e}")
-    else:
-      print("Nom de colonne invalide.")
+  # Demander un nouveau nom pour la colonne
+  new_col_name = input(f"Nouveau nom pour '{col_to_modify}':").strip()
+  df.rename(columns={col_to_modify: new_col_name}, inplace=True)
+  print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
 
-  else:
-    print("Option invalide.")
+  # Proposer de modifier le type de la colonne
+  modify_type = input(f"Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (O/n): ").strip().lower()
+  if modify_type in ["O","o"]:
+    print("Types de données disponibles : int, float, str, bool")
+    new_col_type = input(f"Nouveau type pour '{new_col_name}' : ").strip().lower()
 
-else:
-  print("Aucune modification n'a été effectuée.")
+    # Convertir le type de la colonne
+    try:
+      if new_col_type == "int":
+        df[new_col_name] = df[new_col_name].astype(int)
+      elif new_col_type == "float":
+        df[new_col_name] = df[new_col_name].astype(float)
+      elif new_col_type == "str":
+        df[new_col_name] = df[new_col_name].astype(str)
+      elif new_col_type == "bool":
+        df[new_col_name] = df[new_col_name].astype(bool)
+      else:
+        print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
 
-# Afficher les données après modification (le cas échéant)
-print("\nDonnées actuelles :")
-print(df)
+      print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
+    except Exception as e:
+      print(f"💣 Erreur lors de la conversion : {e}")
 
-# Ouvrir une fenêtre Windows pour choisir un dossier
-root = Tk()
-root.withdraw()  # Masquer la fenêtre principale de Tkinter
-dossier = askdirectory(title="Choisissez un dossier pour sauvegarder le fichier CSV")
+  # Afficher le tableau final
+  print("🚀 Format des nouvelles données :")
+  print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type de données"], tablefmt="grid"))
 
-if dossier:  # Vérifier si un dossier a été sélectionné
-  nom_fichier = input("Entrez le nom du fichier (sans extension) : ").strip()
-  chemin_complet = os.path.join(dossier, f"{nom_fichier}.csv")
+  # Demander si l'utilisateur souhaite modifier une autre colonne
+  response = input("\nSouhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
 
-  # Sauvegarder le fichier dans le dossier sélectionné
-  df.to_csv(chemin_complet, index=False)
-  print(f"Données sauvegardées dans {chemin_complet}.")
-else:
-  print("Sauvegarde annulée.")
-
-
+print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
 
