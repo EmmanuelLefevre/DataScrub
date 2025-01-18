@@ -209,4 +209,4 @@ if file_path:
   print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
 
 else:
-  print("⚠️ Aucun fichier sélectionné. Programme terminé.")
+  print("👿 Aucun fichier sélectionné. Programme terminé.")
