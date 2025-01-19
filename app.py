@@ -232,9 +232,9 @@ def handle_modifications(df):
     col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
     # Vérifier si la colonne existe
-    while col_to_modify not in df.columns:
+    if col_to_modify not in df.columns:
       print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide !")
-      col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
+      continue
 
     # Demander un nouveau nom pour la colonne
     new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
@@ -243,6 +243,12 @@ def handle_modifications(df):
       print("\n")
       return df
 
+    # Vérifier si le nouveau nom de colonne existe déjà
+    if new_col_name in df.columns:
+      print(f"⚠️ La colonne '{new_col_name}' existe déjà. Veuillez saisir un autre nom !")
+      continue
+
+    # Renommer la colonne
     df.rename(columns={col_to_modify: new_col_name}, inplace=True)
     print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
 
