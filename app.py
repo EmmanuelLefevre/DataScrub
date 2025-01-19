@@ -107,7 +107,6 @@ def delete_column(df):
     col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
     if col_to_delete == "fin":
-      print("\n")
       return df
 
     # Vérifier si la colonne existe dans le CSV
@@ -165,7 +164,6 @@ def handle_missing_values(df):
       col_to_clean = input(f"💬 Quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
 
       if col_to_clean == 'fin':
-        print("\n")
         break
 
       # Vérifier si la colonne existe
@@ -212,14 +210,11 @@ def handle_missing_values(df):
       response = input("🏁 Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
 
       if response not in ["o", ""]:
-        print("\n")
         break
 
   # Afficher le cumul de lignes supprimées
   plural = "s" if total_rows_removed > 1 else ""
-  print("\n")
   print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
-  print("\n")
 
   return df
 
@@ -244,7 +239,6 @@ def handle_modifications(df):
     new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
 
     if new_col_name == "fin":
-      print("\n")
       return df
 
     # Vérifier si le nouveau nom de colonne est vide
@@ -274,7 +268,6 @@ def handle_modifications(df):
       new_col_type = input(f"💬 Nouveau type pour '{new_col_name}' (ou 'fin' pour ignorer) : ").strip().lower()
 
       if new_col_type == "fin":
-        print("\n")
         return df
 
       # Vérification du type de données avant conversion
@@ -319,7 +312,6 @@ def handle_duplicates(df):
     else:
       plural = "s" if duplicates_removed > 1 else ""
       print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
-    print("\n")
 
   return df
 
@@ -346,10 +338,10 @@ def main():
   initial_df = df.copy()
 
   # Afficher nombre de lignes du DataFrame
-  print("\n")
   print("=============================")
   print(f"🔗 DataFrame: {len(df)} lignes")
   print("=============================")
+  print("\n")
 
   # Afficher les colonnes du CSV avec le type associé
   print("=========================")
