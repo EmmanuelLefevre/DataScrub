@@ -81,7 +81,7 @@ def save_file(df, existing_filename):
 
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
-      print(f"📄 Fichier '{filename}{extension}' enregistré sous: {save_path}")
+      print(f"📄 '{filename}{extension}' enregistré sous: {save_path}")
     else:
       print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
@@ -373,16 +373,14 @@ def main():
 
   # Sauvegarde si des modifications ont été effectuées
   if not df.equals(initial_df):
-    save_file(df)
+    # Extraire le nom de fichier à partir du chemin
+    existing_filename = os.path.basename(file_path)
+    save_file(df, existing_filename)
     print("\n")
     print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
   else:
     print("\n")
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
-
-  # Détruire l'intance de Tk
-  tkInstance.quit()
-  tkInstance.destroy()
 
 
 
