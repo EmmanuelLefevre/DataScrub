@@ -298,7 +298,7 @@ def handle_modifications(df):
 
     # Si réponse vide
     if not response:
-      response = "O"
+      response = "o"
 
   return df
 
