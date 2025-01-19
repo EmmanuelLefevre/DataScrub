@@ -278,6 +278,8 @@ def handle_modifications(df):
         try:
           df[new_col_name] = df[new_col_name].astype(new_col_type)
           print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
+        except ValueError:
+          print(f"💣 Impossible de convertir la colonne '{new_col_name}' en type '{new_col_type}' !")
         except Exception as e:
           print(f"💣 Erreur lors de la conversion : {e}")
       else:
@@ -330,7 +332,7 @@ def main():
   try:
     df = pd.read_csv(file_path, encoding='utf-8')
   except UnicodeDecodeError:
-    print("💣 Erreur de décodage. Tentative avec ISO-8859-1")
+    print("💣 Erreur de décodage. Tentative avec ISO-8859-1 ...")
     df = pd.read_csv(file_path, encoding='ISO-8859-1')
   except Exception as e:
     print(f"💣 Erreur lors du chargement du fichier CSV : {e}")
