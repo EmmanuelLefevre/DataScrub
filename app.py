@@ -20,24 +20,24 @@ tkInstance.withdraw()
 
 
 
-#######################################################################
-##### Fonction pour choisir le fichier CSV dans le dossier "data" #####
-#######################################################################
+#############################################################################
+##### Fonction pour choisir le fichier CSV dans le dossier "data_frame" #####
+#############################################################################
 def select_file():
-  # Chemin du dossier "data"
-  data_dir = os.path.join(os.getcwd(), "data")
+  # Chemin du dossier "data_frame"
+  data_dir = os.path.join(os.getcwd(), "data_frame")
 
-  # Vérifier si le dossier "data" existe
+  # Vérifier si le dossier "data_frame" existe
   if not os.path.exists(data_dir):
-    print("⚠️ Le dossier 'data' est introuvable... Créer le dossier et y ajouter un fichier au format CSV !")
+    print("⚠️ Le dossier 'data_frame' est introuvable... Créer le dossier et y ajouter un fichier au format CSV !")
     sys.exit(0)
 
-  # Lister les fichiers CSV dans le dossier "data"
+  # Lister les fichiers CSV dans le dossier "data_frame"
   csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
 
   # Aucun fichier CSV trouvé
   if not csv_files:
-    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data'. Ajouter un fichier avant de relancer le programme !")
+    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data_frame'. Ajouter un fichier avant de relancer le programme !")
     sys.exit(0)
 
   # Un seul fichier CSV trouvé => le charger automatiquement
@@ -68,7 +68,7 @@ def save_file(df, existing_filename):
       defaultextension=".csv",
       filetypes=[("Fichiers CSV", "*.csv")],
       initialfile=existing_filename,
-      initialdir=os.path.join(os.getcwd(), "data")
+      initialdir=os.path.join(os.getcwd(), "data_frame")
     )
 
     if save_path:
@@ -81,7 +81,8 @@ def save_file(df, existing_filename):
 
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
-      print(f"📄 '{filename}{extension}' enregistré sous: {save_path}")
+      print("\n")
+      print(f"📄 {filename}{extension} enregistré sous: {save_path}")
     else:
       print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
