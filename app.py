@@ -6,8 +6,18 @@ from tkinter import Tk
 from tkinter.filedialog import askdirectory, askopenfilename, asksaveasfilename
 from dotenv import load_dotenv
 
+
+
+################
+##### Load #####
+################
 # Charger variables d'environnement
 load_dotenv()
+
+# Créer instance de Tk
+tkInstance = Tk()
+tkInstance.withdraw()
+
 
 
 #######################################################################
@@ -19,7 +29,7 @@ def select_file():
 
   # Vérifier si le dossier "data" existe
   if not os.path.exists(data_dir):
-    print("⚠️ Le dossier 'data' est introuvable... Créer le dossier et y ajouter un fichier au format CSV!")
+    print("⚠️ Le dossier 'data' est introuvable... Créer le dossier et y ajouter un fichier au format CSV !")
     sys.exit(0)
 
   # Lister les fichiers CSV dans le dossier "data"
@@ -27,15 +37,12 @@ def select_file():
 
   # Aucun fichier CSV trouvé
   if not csv_files:
-    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data'. Ajouter un fichier avant de relancer le programme!")
+    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data'. Ajouter un fichier avant de relancer le programme !")
     sys.exit(0)
 
   # Un seul fichier CSV trouvé => le charger automatiquement
   if len(csv_files) == 1:
     return os.path.join(data_dir, csv_files[0])
-
-  # Si plusieurs fichiers => ouvrir la fenêtre de sélection
-  Tk().withdraw()
 
   file_path = askopenfilename(
     title="Choisir un fichier CSV",
@@ -56,8 +63,6 @@ def select_file():
 ########################################################
 def save_file(df):
   try:
-    Tk().withdraw()
-
     save_path = asksaveasfilename(
       title="Enregistrer le fichier modifié",
       defaultextension=".csv",
@@ -75,6 +80,9 @@ def save_file(df):
       print(f"📄 Fichier enregistré sous: {save_path}")
     else:
       print("❌ Aucune sauvegarde effectuée. Programme terminé.")
+
+  except PermissionError:
+    print("💣 Fichier ouvert, assurez-vous que celui-ci est fermé !")
 
   except Exception as e:
     print(f"💣 Erreur lors de la sauvegarde : {e}")
@@ -104,7 +112,7 @@ def delete_column(df):
         df.drop(columns=[col_to_delete], inplace=True)
         print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
       else:
-        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas! Veuillez réessayer.")
+        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas ! Veuillez réessayer.")
 
     return df
 
@@ -199,7 +207,7 @@ def handle_missing_values(df):
 
         # Vérifier si toutes les lignes ont été nettoyées
         if not df.isnull().any().any():
-          print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées!")
+          print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !")
           break
 
         # Demander si l'utilisateur souhaite continuer
@@ -236,7 +244,7 @@ def handle_modifications(df):
 
       # Vérifier si la colonne existe
       while col_to_modify not in df.columns:
-        print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide!")
+        print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide !")
         col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Demander un nouveau nom pour la colonne
@@ -273,7 +281,7 @@ def handle_modifications(df):
           except Exception as e:
             print(f"💣 Erreur lors de la conversion : {e}")
         else:
-          print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
+          print("⚠️ Type de données non reconnu. Aucune modification effectuée !")
 
       # Demander si l'utilisateur souhaite modifier une autre colonne
       response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
@@ -369,6 +377,9 @@ def main():
     print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
   else:
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
+
+  # Détruire l'intance de Tk
+  tkInstance.destroy()
 
 
 
