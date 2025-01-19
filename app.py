@@ -93,32 +93,27 @@ def save_file(df):
 ##### Fonction pour supprimer une colonne de toutes les lignes et de l'entête #####
 ###################################################################################
 def delete_column(df):
-  try:
-    while True:
-      # Supprimer une colonne
-      response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
+  while True:
+    # Supprimer une colonne
+    response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
 
-      if response not in ["o", ""]:
-        break
+    if response not in ["o", ""]:
+      break
 
-      col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
+    col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
-      if col_to_delete == "fin":
-        print("\n")
-        return df
+    if col_to_delete == "fin":
+      print("\n")
+      return df
 
-      # Vérifier si la colonne existe dans le CSV
-      if col_to_delete in df.columns:
-        df.drop(columns=[col_to_delete], inplace=True)
-        print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
-      else:
-        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas ! Veuillez réessayer.")
+    # Vérifier si la colonne existe dans le CSV
+    if col_to_delete in df.columns:
+      df.drop(columns=[col_to_delete], inplace=True)
+      print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
+    else:
+      print(f"⚠️ La colonne '{col_to_delete}' n'existe pas ! Veuillez réessayer.")
 
-    return df
-
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
-    sys.exit(0)
+  return df
 
 
 
@@ -126,108 +121,103 @@ def delete_column(df):
 ##### Fonction pour gérer le processus de nettoyage des valeurs manquantes #####
 ################################################################################
 def handle_missing_values(df):
-  try:
-    # Eliminer les lignes comportant des valeurs manquantes
-    response = input("🏁 Souhaitez-vous supprimer les lignes comportant des valeurs manquantes ? (O/n): ").strip().lower()
+  # Eliminer les lignes comportant des valeurs manquantes
+  response = input("🏁 Souhaitez-vous supprimer les lignes comportant des valeurs manquantes ? (O/n): ").strip().lower()
 
-    # Initialiser le total des lignes supprimées
-    total_rows_removed = 0
+  # Initialiser le total des lignes supprimées
+  total_rows_removed = 0
 
-    # Nombre de lignes initial
+  # Nombre de lignes initial
+  after_cleaning_nullables = len(df)
+
+  if response in ["o", ""]:
+    # Identifier les colonnes contenant des valeurs manquantes
+    columns_with_missing = df.columns[df.isnull().any()].tolist()
+
+    # Si aucunes colonnes contenant des valeurs manquantes
+    if not columns_with_missing:
+      print("✔️ Aucune colonne avec des valeurs manquantes.")
+      return df
+
+    # Si des colonnes contiennent des valeurs manquantes
+    if columns_with_missing:
+      # Calculer le nombre de valeurs manquantes pour chaque colonne
+      missing_values_count = df[columns_with_missing].isnull().sum()
+
+      # Créer un tableau à afficher avec le nombre de valeurs manquantes par colonne
+      missing_values_table = pd.DataFrame({
+        "Colonne": columns_with_missing,
+        "Valeurs manquantes": missing_values_count
+      })
+
+      # Afficher le tableau initial
+      print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
+
+    # Initialiser valeurs manquantes
     after_cleaning_nullables = len(df)
 
-    if response in ["o", ""]:
-      # Identifier les colonnes contenant des valeurs manquantes
-      columns_with_missing = df.columns[df.isnull().any()].tolist()
+    # Demander à l'utilisateur de choisir quelles colonnes nettoyer
+    while True:
+      col_to_clean = input(f"💬 Quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
 
-      # Si aucunes colonnes contenant des valeurs manquantes
-      if not columns_with_missing:
-        print("✔️ Aucune colonne avec des valeurs manquantes.")
-        return df
+      if col_to_clean == 'fin':
+        print("\n")
+        break
 
-      # Si des colonnes contiennent des valeurs manquantes
-      if columns_with_missing:
-        # Calculer le nombre de valeurs manquantes pour chaque colonne
-        missing_values_count = df[columns_with_missing].isnull().sum()
+      # Vérifier si la colonne existe
+      if col_to_clean in columns_with_missing:
+        # Calculer le nombre de lignes avant la suppression
+        before_cleaning_nullables = len(df)
 
-        # Créer un tableau à afficher avec le nombre de valeurs manquantes par colonne
-        missing_values_table = pd.DataFrame({
-          "Colonne": columns_with_missing,
-          "Valeurs manquantes": missing_values_count
-        })
+        # Supprimer les lignes où la colonne spécifiée a des valeurs manquantes
+        df.dropna(subset=[col_to_clean], inplace=True)
 
-        # Afficher le tableau initial
-        print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
+        # Calculer le nombre de lignes après la suppression
+        after_cleaning_nullables = len(df)
 
-      # Initialiser valeurs manquantes
-      after_cleaning_nullables = len(df)
+        # Calculer le nombre de lignes supprimées
+        rows_removed = before_cleaning_nullables - after_cleaning_nullables
 
-      # Demander à l'utilisateur de choisir quelles colonnes nettoyer
-      while True:
-        col_to_clean = input(f"💬 Quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
+        # Ajouter le nombre de lignes supprimées au total
+        total_rows_removed += rows_removed
 
-        if col_to_clean == 'fin':
-          print("\n")
-          break
-
-        # Vérifier si la colonne existe
-        if col_to_clean in columns_with_missing:
-          # Calculer le nombre de lignes avant la suppression
-          before_cleaning_nullables = len(df)
-
-          # Supprimer les lignes où la colonne spécifiée a des valeurs manquantes
-          df.dropna(subset=[col_to_clean], inplace=True)
-
-          # Calculer le nombre de lignes après la suppression
-          after_cleaning_nullables = len(df)
-
-          # Calculer le nombre de lignes supprimées
-          rows_removed = before_cleaning_nullables - after_cleaning_nullables
-
-          # Ajouter le nombre de lignes supprimées au total
-          total_rows_removed += rows_removed
-
-          if rows_removed == 1:
-            print(f"✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.")
-          else:
-            print(f"✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.")
-
-          # Recalculer les colonnes avec des valeurs manquantes et afficher le tableau mis à jour
-          columns_with_missing = df.columns[df.isnull().any()].tolist()
-          if columns_with_missing:
-            missing_values_count = df[columns_with_missing].isnull().sum()
-            missing_values_table = pd.DataFrame({
-              "Colonne": columns_with_missing,
-              "Valeurs manquantes": missing_values_count
-            })
-            print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
-
+        if rows_removed == 1:
+          print(f"✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.")
         else:
-          print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
+          print(f"✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.")
 
-        # Vérifier si toutes les lignes ont été nettoyées
-        if not df.isnull().any().any():
-          print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !")
-          break
+        # Recalculer les colonnes avec des valeurs manquantes et afficher le tableau mis à jour
+        columns_with_missing = df.columns[df.isnull().any()].tolist()
+        if columns_with_missing:
+          missing_values_count = df[columns_with_missing].isnull().sum()
+          missing_values_table = pd.DataFrame({
+            "Colonne": columns_with_missing,
+            "Valeurs manquantes": missing_values_count
+          })
+          print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
 
-        # Demander si l'utilisateur souhaite continuer
-        response = input("🏁 Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
+      else:
+        print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
 
-        if not response or response not in ["O", "o"]:
-          print("\n")
-          break
+      # Vérifier si toutes les lignes ont été nettoyées
+      if not df.isnull().any().any():
+        print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !")
+        break
 
-    # Afficher le cumul de lignes supprimées
-    plural = "s" if total_rows_removed > 1 else ""
-    print("\n")
-    print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
-    print("\n")
+      # Demander si l'utilisateur souhaite continuer
+      response = input("🏁 Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
 
-    return df
+      if not response or response not in ["O", "o"]:
+        print("\n")
+        break
 
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
-    sys.exit(0)
+  # Afficher le cumul de lignes supprimées
+  plural = "s" if total_rows_removed > 1 else ""
+  print("\n")
+  print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
+  print("\n")
+
+  return df
 
 
 
@@ -235,66 +225,61 @@ def handle_missing_values(df):
 ##### Fonction pour demander à l'utilisateur s'il souhaite modifier les données et leur type associé #####
 ##########################################################################################################
 def handle_modifications(df):
-  try:
-    # Demander à l'utilisateur s'il souhaite modifier les données
-    response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
+  # Demander à l'utilisateur s'il souhaite modifier les données
+  response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
 
-    while response in ["o", ""]:
+  while response in ["o", ""]:
+    col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
+
+    # Vérifier si la colonne existe
+    while col_to_modify not in df.columns:
+      print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide !")
       col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
-      # Vérifier si la colonne existe
-      while col_to_modify not in df.columns:
-        print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide !")
-        col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
+    # Demander un nouveau nom pour la colonne
+    new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
 
-      # Demander un nouveau nom pour la colonne
-      new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
+    if new_col_name == "fin":
+      print("\n")
+      return df
 
-      if new_col_name == "fin":
+    df.rename(columns={col_to_modify: new_col_name}, inplace=True)
+    print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
+
+    # Proposer de modifier le type de la colonne
+    modify_type = input(f"🏁 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
+
+    # Si réponse vide
+    if not modify_type:
+      modify_type = "n"
+    print("❌")
+
+    if modify_type in ["O","o"]:
+      print("Types de données disponibles : int, float, str, bool")
+      new_col_type = input(f"💬 Nouveau type pour '{new_col_name}' (ou 'fin' pour ignorer) : ").strip().lower()
+
+      if new_col_type == "fin":
         print("\n")
         return df
 
-      df.rename(columns={col_to_modify: new_col_name}, inplace=True)
-      print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
+      # Vérification du type de données avant conversion
+      if new_col_type in ["int", "float", "str", "bool"]:
+        try:
+          df[new_col_name] = df[new_col_name].astype(new_col_type)
+          print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
+        except Exception as e:
+          print(f"💣 Erreur lors de la conversion : {e}")
+      else:
+        print("⚠️ Type de données non reconnu. Aucune modification effectuée !")
 
-      # Proposer de modifier le type de la colonne
-      modify_type = input(f"🏁 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
+    # Demander si l'utilisateur souhaite modifier une autre colonne
+    response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
 
-      # Si réponse vide
-      if not modify_type:
-        modify_type = "n"
-      print("❌")
+    # Si réponse vide
+    if not response:
+      response = "O"
 
-      if modify_type in ["O","o"]:
-        print("Types de données disponibles : int, float, str, bool")
-        new_col_type = input(f"💬 Nouveau type pour '{new_col_name}' (ou 'fin' pour ignorer) : ").strip().lower()
-
-        if new_col_type == "fin":
-          print("\n")
-          return df
-
-        # Vérification du type de données avant conversion
-        if new_col_type in ["int", "float", "str", "bool"]:
-          try:
-            df[new_col_name] = df[new_col_name].astype(new_col_type)
-            print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
-          except Exception as e:
-            print(f"💣 Erreur lors de la conversion : {e}")
-        else:
-          print("⚠️ Type de données non reconnu. Aucune modification effectuée !")
-
-      # Demander si l'utilisateur souhaite modifier une autre colonne
-      response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
-
-      # Si réponse vide
-      if not response:
-        response = "O"
-
-    return df
-
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
-    sys.exit(0)
+  return df
 
 
 
@@ -302,29 +287,24 @@ def handle_modifications(df):
 ##### Fonction pour demander à l'utilisateur s'il souhaite supprimer les doublons #####
 #######################################################################################
 def handle_duplicates(df):
-  try:
-    # Proposer de supprimer des doublons
-    response = input("🏁 Souhaitez-vous supprimer les doublons ? (O/n): ").strip().lower()
+  # Proposer de supprimer des doublons
+  response = input("🏁 Souhaitez-vous supprimer les doublons ? (O/n): ").strip().lower()
 
-    if response in ["o", ""]:
-      before_cleaning_duplicates = len(df)
-      df.drop_duplicates(inplace=True)
-      after_cleaning_duplicates = len(df)
+  if response in ["o", ""]:
+    before_cleaning_duplicates = len(df)
+    df.drop_duplicates(inplace=True)
+    after_cleaning_duplicates = len(df)
 
-      duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
+    duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
 
-      if before_cleaning_duplicates == after_cleaning_duplicates:
-        print("✔️ Aucun doublon trouvé.")
-      else:
-        plural = "s" if duplicates_removed > 1 else ""
-        print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
-      print("\n")
+    if before_cleaning_duplicates == after_cleaning_duplicates:
+      print("✔️ Aucun doublon trouvé.")
+    else:
+      plural = "s" if duplicates_removed > 1 else ""
+      print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
+    print("\n")
 
-    return df
-
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
-    sys.exit(0)
+  return df
 
 
 
@@ -390,4 +370,8 @@ def main():
 ##### Execution #####
 #####################
 if __name__ == "__main__":
-  main()
+  try:
+    main()
+  except KeyboardInterrupt:
+    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
+    sys.exit(0)
