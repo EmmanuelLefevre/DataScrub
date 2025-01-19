@@ -156,7 +156,7 @@ def handle_missing_values(df):
 
       # Demander à l'utilisateur de choisir quelles colonnes nettoyer
       while True:
-        col_to_clean = input(f"💬 Pour quelle colonne souhaitez-vous effectuer cette opération ? ('fin' pour terminer): ").strip()
+        col_to_clean = input(f"💬 Quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
 
         if col_to_clean == 'fin':
           print("\n")
@@ -240,12 +240,17 @@ def handle_modifications(df):
         col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Demander un nouveau nom pour la colonne
-      new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}': ").strip()
+      new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
+
+      if new_col_name == "fin":
+        print("\n")
+        return df
+
       df.rename(columns={col_to_modify: new_col_name}, inplace=True)
       print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
 
       # Proposer de modifier le type de la colonne
-      modify_type = input(f"💬 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
+      modify_type = input(f"🏁 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
 
       # Si réponse vide
       if not modify_type:
@@ -254,7 +259,11 @@ def handle_modifications(df):
 
       if modify_type in ["O","o"]:
         print("Types de données disponibles : int, float, str, bool")
-        new_col_type = input(f"💬 Nouveau type pour '{new_col_name}': ").strip().lower()
+        new_col_type = input(f"💬 Nouveau type pour '{new_col_name}' (ou 'fin' pour ignorer) : ").strip().lower()
+
+        if new_col_type == "fin":
+          print("\n")
+          return df
 
         # Vérification du type de données avant conversion
         if new_col_type in ["int", "float", "str", "bool"]:
@@ -289,7 +298,7 @@ def handle_duplicates(df):
     # Proposer de supprimer des doublons
     response = input("🏁 Souhaitez-vous supprimer les doublons ? (O/n): ").strip().lower()
 
-    if response in ["O", ""]:
+    if response in ["o", ""]:
       before_cleaning_duplicates = len(df)
       df.drop_duplicates(inplace=True)
       after_cleaning_duplicates = len(df)
