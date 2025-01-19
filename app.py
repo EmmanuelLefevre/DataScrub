@@ -66,6 +66,10 @@ def save_file(df):
     )
 
     if save_path:
+      # Ajouter automatiquement l'extension ".csv" si absente
+      if not save_path.endswith(".csv"):
+        save_path += ".csv"
+
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
       print(f"📄 Fichier enregistré sous: {save_path}")
@@ -73,7 +77,7 @@ def save_file(df):
       print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
   except Exception as e:
-    print(f"💥 Erreur lors de la sauvegarde : {e}")
+    print(f"💣 Erreur lors de la sauvegarde : {e}")
 
 
 
@@ -82,10 +86,13 @@ def save_file(df):
 ###################################################################################
 def delete_column(df):
   try:
-    # Supprimer une colonne
-    response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
+    while True:
+      # Supprimer une colonne
+      response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
 
-    if response in ["O", "o", ""]:
+      if response not in ["o", ""]:
+        break
+
       col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
       if col_to_delete == "fin":
@@ -97,7 +104,7 @@ def delete_column(df):
         df.drop(columns=[col_to_delete], inplace=True)
         print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
       else:
-        print(f"⚠️ Cette colonne n'existe pas!")
+        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas! Veuillez réessayer.")
 
     return df
 
@@ -121,7 +128,7 @@ def handle_missing_values(df):
     # Nombre de lignes initial
     after_cleaning_nullables = len(df)
 
-    if response in ["O", "o", ""]:
+    if response in ["o", ""]:
       # Identifier les colonnes contenant des valeurs manquantes
       columns_with_missing = df.columns[df.isnull().any()].tolist()
 
@@ -224,7 +231,7 @@ def handle_modifications(df):
     # Demander à l'utilisateur s'il souhaite modifier les données
     response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
 
-    while response in ["O", "o", ""]:
+    while response in ["o", ""]:
       col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Vérifier si la colonne existe
@@ -241,31 +248,23 @@ def handle_modifications(df):
       modify_type = input(f"💬 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
 
       # Si réponse vide
-      if not response:
-        response = "N"
+      if not modify_type:
+        modify_type = "n"
       print("❌")
 
       if modify_type in ["O","o"]:
         print("Types de données disponibles : int, float, str, bool")
         new_col_type = input(f"💬 Nouveau type pour '{new_col_name}': ").strip().lower()
 
-        # Convertir le type de la colonne
-        try:
-          match new_col_type:
-            case "int":
-              df[new_col_name] = df[new_col_name].astype(int)
-            case "float":
-              df[new_col_name] = df[new_col_name].astype(float)
-            case "str":
-              df[new_col_name] = df[new_col_name].astype(str)
-            case "bool":
-              df[new_col_name] = df[new_col_name].astype(bool)
-            case _:
-              print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
-
-          print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
-        except Exception as e:
-          print(f"💣 Erreur lors de la conversion : {e}")
+        # Vérification du type de données avant conversion
+        if new_col_type in ["int", "float", "str", "bool"]:
+          try:
+            df[new_col_name] = df[new_col_name].astype(new_col_type)
+            print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
+          except Exception as e:
+            print(f"💣 Erreur lors de la conversion : {e}")
+        else:
+          print("⚠️ Type de données non reconnu. Aucune modification effectuée!")
 
       # Demander si l'utilisateur souhaite modifier une autre colonne
       response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
@@ -274,7 +273,7 @@ def handle_modifications(df):
       if not response:
         response = "O"
 
-      return df
+    return df
 
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
@@ -290,7 +289,7 @@ def handle_duplicates(df):
     # Proposer de supprimer des doublons
     response = input("🏁 Souhaitez-vous supprimer les doublons ? (O/n): ").strip().lower()
 
-    if response in ["o", "O", ""]:
+    if response in ["O", ""]:
       before_cleaning_duplicates = len(df)
       df.drop_duplicates(inplace=True)
       after_cleaning_duplicates = len(df)
@@ -321,9 +320,9 @@ def main():
 
   # Charger le fichier CSV
   try:
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, encoding='utf-8')
   except Exception as e:
-    print(f"💥 Erreur lors du chargement du fichier CSV : {e}")
+    print(f"💣 Erreur lors du chargement du fichier CSV : {e}")
     sys.exit(0)
 
   # Créer une copie du DataFrame initial pour détecter les modifications
