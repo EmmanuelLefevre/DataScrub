@@ -114,6 +114,9 @@ def handle_missing_values():
     # Initialiser le total des lignes supprimées
     total_rows_removed = 0
 
+    # Nombre de lignes initial
+    after_cleaning_nullables = len(df)
+
     if response in ["O", "o"]:
       # Identifier les colonnes contenant des valeurs manquantes
       columns_with_missing = df.columns[df.isnull().any()].tolist()
@@ -220,7 +223,7 @@ def handle_modifications():
 
       # Vérifier si la colonne existe
       while col_to_modify not in df.columns:
-        print(f"⚠️ La colonne '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide!")
+        print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide!")
         col_to_modify = input("💬 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Demander un nouveau nom pour la colonne
@@ -276,14 +279,14 @@ if file_path:
   # Charger le fichier CSV
   df = pd.read_csv(file_path)
 
+  # Créer une copie du DataFrame initial pour détecter les modifications
+  initial_df = df.copy()
+
   # Afficher nombre de lignes du DataFrame
   print("\n")
   print("=============================")
   print(f"🔗 DataFrame: {len(df)} lignes")
   print("=============================")
-
-  # Variable pour suivre si des modifications ont été effectuées
-  has_modifications = False
 
   # Nettoyer les doublons
   before_cleaning_duplicates = len(df)
@@ -297,7 +300,6 @@ if file_path:
   else:
     plural = "s" if duplicates_removed > 1 else ""
     print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
-    has_modifications = True
   print("\n")
 
   # Afficher les colonnes du CSV avec le type associé
@@ -310,7 +312,6 @@ if file_path:
   try:
     # Demander à l'utilisateur s'il souhaite supprimer une colonne
     delete_column()
-    has_modifications = True
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
@@ -318,7 +319,6 @@ if file_path:
   try:
     # Demander à l'utilisateur s'il souhaite supprimer les lignes comportant des valeurs manquantes
     handle_missing_values()
-    has_modifications = True
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
@@ -326,7 +326,6 @@ if file_path:
   try:
     # Demander à l'utilisateur s'il souhaite modifier les données et leur type associé
     handle_modifications()
-    has_modifications = True
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
     sys.exit(0)
@@ -337,12 +336,12 @@ if file_path:
   print("=============================================")
   print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type de données"], tablefmt="grid"))
 
-  print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
 
   # Si des modifications ont été effectuées, proposer de sauvegarder
-  if has_modifications:
+  if not df.equals(initial_df):
     # Sauvegarder les modifications
     save_file(df)
+    print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
   else:
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
 
