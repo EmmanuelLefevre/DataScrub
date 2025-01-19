@@ -75,9 +75,12 @@ def save_file(df):
       if not save_path.endswith(".csv"):
         save_path += ".csv"
 
+      # Extraire le nom de fichier et l'extension
+      filename, extension = os.path.splitext(os.path.basename(save_path))
+
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
-      print(f"📄 Fichier enregistré sous: {save_path}")
+      print(f"📄 Fichier '{filename}{extension}' enregistré sous: {save_path}")
     else:
       print("❌ Aucune sauvegarde effectuée. Programme terminé.")
 
