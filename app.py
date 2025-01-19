@@ -169,7 +169,7 @@ def handle_missing_values(df):
 
     # Demander à l'utilisateur de choisir quelles colonnes nettoyer
     while True:
-      col_to_clean = input(f"💬 Quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
+      col_to_clean = input(f"💬 Sur quelle colonne souhaitez-vous effectuer cette opération (ou 'fin' pour ignorer) : ").strip()
 
       if col_to_clean == 'fin':
         break
