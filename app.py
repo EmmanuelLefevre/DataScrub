@@ -374,8 +374,10 @@ def main():
   # Sauvegarde si des modifications ont été effectuées
   if not df.equals(initial_df):
     save_file(df)
+    print("\n")
     print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
   else:
+    print("\n")
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
 
   # Détruire l'intance de Tk
