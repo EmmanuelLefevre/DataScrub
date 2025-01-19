@@ -341,10 +341,7 @@ def main():
   initial_df = df.copy()
 
   # Afficher nombre de lignes du DataFrame
-  print("=============================")
   print(f"🔗 DataFrame: {len(df)} lignes")
-  print("=============================")
-  print("\n")
 
   # Afficher les colonnes du CSV avec le type associé
   print("=========================")
