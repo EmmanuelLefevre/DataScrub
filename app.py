@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 # Charger variables d'environnement
 load_dotenv()
 
+
 #######################################################################
 ##### Fonction pour choisir le fichier CSV dans le dossier "data" #####
 #######################################################################
@@ -34,59 +35,62 @@ def select_file():
     return os.path.join(data_dir, csv_files[0])
 
   # Si plusieurs fichiers => ouvrir la fenêtre de sélection
-  else:
-    # Créer une fenêtre tkinter
-    Tk().withdraw()
+  Tk().withdraw()
 
-    file_path = askopenfilename(
-      title="Choisir un fichier CSV",
-      filetypes=[("Fichiers CSV", "*.csv")],
-      # Répertoire initial
-      initialdir=os.path.join(os.getcwd(), "data")
-    )
+  file_path = askopenfilename(
+    title="Choisir un fichier CSV",
+    filetypes=[("Fichiers CSV", "*.csv")],
+    initialdir=data_dir
+  )
 
-    return file_path
+  if not file_path:
+    print("❌ Aucun fichier sélectionné.")
+    sys.exit(0)
+
+  return file_path
+
+
 
 ########################################################
 ##### Fonction pour enregistrer le fichier modifié #####
 ########################################################
 def save_file(df):
-  # Créer une fenêtre tkinter
-  Tk().withdraw()
+  try:
+    Tk().withdraw()
 
-  save_path = asksaveasfilename(
-    title="Enregistrer le fichier modifié",
-    defaultextension=".csv",
-    filetypes=[("Fichiers CSV", "*.csv")],
-    # Répertoire initial
-    initialdir=os.path.join(os.getcwd(), "data")
-  )
+    save_path = asksaveasfilename(
+      title="Enregistrer le fichier modifié",
+      defaultextension=".csv",
+      filetypes=[("Fichiers CSV", "*.csv")],
+      initialdir=os.path.join(os.getcwd(), "data")
+    )
 
-  if save_path:
-    # Sauvegarder le DataFrame au chemin sélectionné
-    df.to_csv(save_path, index=False)
-    print(f"📄 Fichier enregistré sous: {save_path}")
-  else:
-    print("❌ Aucune sauvegarde effectuée. Programme terminé.")
+    if save_path:
+      # Sauvegarder le DataFrame au chemin sélectionné
+      df.to_csv(save_path, index=False)
+      print(f"📄 Fichier enregistré sous: {save_path}")
+    else:
+      print("❌ Aucune sauvegarde effectuée. Programme terminé.")
+
+  except Exception as e:
+    print(f"💥 Erreur lors de la sauvegarde : {e}")
+
+
 
 ###################################################################################
 ##### Fonction pour supprimer une colonne de toutes les lignes et de l'entête #####
 ###################################################################################
-def delete_column():
+def delete_column(df):
   try:
     # Supprimer une colonne
     response = input("🏁 Souhaitez-vous supprimer une colonne ? (O/n): ").strip().lower()
 
-    # Si réponse vide
-    if not response:
-      response = "O"
-
-    if response in ["O", "o"]:
-      col_to_delete = input("🏁 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
+    if response in ["O", "o", ""]:
+      col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
       if col_to_delete == "fin":
         print("\n")
-        return
+        return df
 
       # Vérifier si la colonne existe dans le CSV
       if col_to_delete in df.columns:
@@ -95,21 +99,21 @@ def delete_column():
       else:
         print(f"⚠️ Cette colonne n'existe pas!")
 
+    return df
+
   except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
+    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
     sys.exit(0)
+
+
 
 ################################################################################
 ##### Fonction pour gérer le processus de nettoyage des valeurs manquantes #####
 ################################################################################
-def handle_missing_values():
+def handle_missing_values(df):
   try:
     # Eliminer les lignes comportant des valeurs manquantes
     response = input("🏁 Souhaitez-vous supprimer les lignes comportant des valeurs manquantes ? (O/n): ").strip().lower()
-
-    # Si réponse vide
-    if not response:
-      response = "O"
 
     # Initialiser le total des lignes supprimées
     total_rows_removed = 0
@@ -117,9 +121,14 @@ def handle_missing_values():
     # Nombre de lignes initial
     after_cleaning_nullables = len(df)
 
-    if response in ["O", "o"]:
+    if response in ["O", "o", ""]:
       # Identifier les colonnes contenant des valeurs manquantes
       columns_with_missing = df.columns[df.isnull().any()].tolist()
+
+      # Si aucunes colonnes contenant des valeurs manquantes
+      if not columns_with_missing:
+        print("✔️ Aucune colonne avec des valeurs manquantes.")
+        return df
 
       # Si des colonnes contiennent des valeurs manquantes
       if columns_with_missing:
@@ -134,15 +143,13 @@ def handle_missing_values():
 
         # Afficher le tableau initial
         print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
-      else:
-        print("✔️ Aucune colonne avec des valeurs manquantes.")
 
       # Initialiser valeurs manquantes
       after_cleaning_nullables = len(df)
 
       # Demander à l'utilisateur de choisir quelles colonnes nettoyer
       while True:
-        col_to_clean = input(f"Pour quelle colonne souhaitez-vous effectuer cette opération ? ('fin' pour terminer): ").strip()
+        col_to_clean = input(f"💬 Pour quelle colonne souhaitez-vous effectuer cette opération ? ('fin' pour terminer): ").strip()
 
         if col_to_clean == 'fin':
           print("\n")
@@ -189,11 +196,9 @@ def handle_missing_values():
           break
 
         # Demander si l'utilisateur souhaite continuer
-        response = input("Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
-        # Si réponse vide
-        if not response:
-          response = "O"
-        if response not in ["O", "o"]:
+        response = input("🏁 Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
+
+        if not response or response not in ["O", "o"]:
           print("\n")
           break
 
@@ -203,43 +208,46 @@ def handle_missing_values():
     print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
     print("\n")
 
+    return df
+
   except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
+    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
     sys.exit(0)
+
+
 
 ##########################################################################################################
 ##### Fonction pour demander à l'utilisateur s'il souhaite modifier les données et leur type associé #####
 ##########################################################################################################
-def handle_modifications():
+def handle_modifications(df):
   try:
     # Demander à l'utilisateur s'il souhaite modifier les données
     response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
-    # Si réponse vide
-    if not response:
-      response = "O"
 
-    while response in ["O","o"]:
+    while response in ["O", "o", ""]:
       col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Vérifier si la colonne existe
       while col_to_modify not in df.columns:
         print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide!")
-        col_to_modify = input("💬 Quelle colonne souhaitez-vous modifier ? ").strip()
+        col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
       # Demander un nouveau nom pour la colonne
-      new_col_name = input(f"Nouveau nom pour la colonne '{col_to_modify}': ").strip()
+      new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}': ").strip()
       df.rename(columns={col_to_modify: new_col_name}, inplace=True)
       print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
 
       # Proposer de modifier le type de la colonne
-      modify_type = input(f"Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
+      modify_type = input(f"💬 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
+
       # Si réponse vide
       if not response:
         response = "N"
       print("❌")
+
       if modify_type in ["O","o"]:
         print("Types de données disponibles : int, float, str, bool")
-        new_col_type = input(f"Nouveau type pour '{new_col_name}': ").strip().lower()
+        new_col_type = input(f"💬 Nouveau type pour '{new_col_name}': ").strip().lower()
 
         # Convertir le type de la colonne
         try:
@@ -260,24 +268,63 @@ def handle_modifications():
           print(f"💣 Erreur lors de la conversion : {e}")
 
       # Demander si l'utilisateur souhaite modifier une autre colonne
-      response = input("Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
+      response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
+
       # Si réponse vide
       if not response:
         response = "O"
 
+      return df
+
   except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
+    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
     sys.exit(0)
+
+
+
+#######################################################################################
+##### Fonction pour demander à l'utilisateur s'il souhaite supprimer les doublons #####
+#######################################################################################
+def handle_duplicates(df):
+  try:
+    # Proposer de supprimer des doublons
+    response = input("🏁 Souhaitez-vous supprimer les doublons ? (O/n): ").strip().lower()
+
+    if response in ["o", "O", ""]:
+      before_cleaning_duplicates = len(df)
+      df.drop_duplicates(inplace=True)
+      after_cleaning_duplicates = len(df)
+
+      duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
+
+      if before_cleaning_duplicates == after_cleaning_duplicates:
+        print("✔️ Aucun doublon trouvé.")
+      else:
+        plural = "s" if duplicates_removed > 1 else ""
+        print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
+      print("\n")
+
+    return df
+
+  except KeyboardInterrupt:
+    print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
+    sys.exit(0)
+
+
 
 ################
 ##### Main #####
 ################
-# Demander à l'utilisateur de choisir un fichier CSV
-file_path = select_file()
+def main():
+  # Demander à l'utilisateur de choisir un fichier CSV
+  file_path = select_file()
 
-if file_path:
   # Charger le fichier CSV
-  df = pd.read_csv(file_path)
+  try:
+    df = pd.read_csv(file_path)
+  except Exception as e:
+    print(f"💥 Erreur lors du chargement du fichier CSV : {e}")
+    sys.exit(0)
 
   # Créer une copie du DataFrame initial pour détecter les modifications
   initial_df = df.copy()
@@ -288,62 +335,37 @@ if file_path:
   print(f"🔗 DataFrame: {len(df)} lignes")
   print("=============================")
 
-  # Nettoyer les doublons
-  before_cleaning_duplicates = len(df)
-  df.drop_duplicates(inplace=True)
-  after_cleaning_duplicates = len(df)
-
-  duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
-
-  if before_cleaning_duplicates == after_cleaning_duplicates:
-    print("✔️ Aucun doublon trouvé.")
-  else:
-    plural = "s" if duplicates_removed > 1 else ""
-    print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
-  print("\n")
-
   # Afficher les colonnes du CSV avec le type associé
   print("=========================")
-  print("🚀 Tableau des données 🚀")
+  print("📊 Tableau des données 📊")
   print("=========================")
   print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type"], tablefmt="grid"))
   print("\n")
 
-  try:
-    # Demander à l'utilisateur s'il souhaite supprimer une colonne
-    delete_column()
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
-    sys.exit(0)
-
-  try:
-    # Demander à l'utilisateur s'il souhaite supprimer les lignes comportant des valeurs manquantes
-    handle_missing_values()
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
-    sys.exit(0)
-
-  try:
-    # Demander à l'utilisateur s'il souhaite modifier les données et leur type associé
-    handle_modifications()
-  except KeyboardInterrupt:
-    print("💥 Opération interrompue par l'utilisateur. Le programme va maintenant se terminer.")
-    sys.exit(0)
+  # Appels des fonctions
+  df = handle_duplicates(df)
+  df = delete_column(df)
+  df = handle_missing_values(df)
+  df = handle_modifications(df)
 
   # Afficher le tableau final
   print("=============================================")
-  print("     🚀 Tableau des nouvelles données 🚀     ")
+  print("     📊 Tableau des nouvelles données 📊     ")
   print("=============================================")
   print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type de données"], tablefmt="grid"))
 
 
-  # Si des modifications ont été effectuées, proposer de sauvegarder
+  # Sauvegarde si des modifications ont été effectuées
   if not df.equals(initial_df):
-    # Sauvegarder les modifications
     save_file(df)
     print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
   else:
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
 
-else:
-  print("👿 Aucun fichier sélectionné. Programme terminé.")
+
+
+#####################
+##### Execution #####
+#####################
+if __name__ == "__main__":
+  main()
