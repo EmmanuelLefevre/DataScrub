@@ -272,7 +272,6 @@ def handle_modifications(df):
     # Si réponse vide
     if not modify_type:
       modify_type = "n"
-    print("❌")
 
     if modify_type in ["O","o"]:
       print("Types de données disponibles : int, float, str, bool")
@@ -380,6 +379,7 @@ def main():
     print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
 
   # Détruire l'intance de Tk
+  tkInstance.quit()
   tkInstance.destroy()
 
 
@@ -393,5 +393,6 @@ if __name__ == "__main__":
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
   finally:
+    tkInstance.quit()
     tkInstance.destroy()
     sys.exit(0)
