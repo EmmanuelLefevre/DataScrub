@@ -61,12 +61,13 @@ def select_file():
 ########################################################
 ##### Fonction pour enregistrer le fichier modifié #####
 ########################################################
-def save_file(df):
+def save_file(df, existing_filename):
   try:
     save_path = asksaveasfilename(
       title="Enregistrer le fichier modifié",
       defaultextension=".csv",
       filetypes=[("Fichiers CSV", "*.csv")],
+      initialfile=existing_filename,
       initialdir=os.path.join(os.getcwd(), "data")
     )
 
@@ -210,7 +211,7 @@ def handle_missing_values(df):
       # Demander si l'utilisateur souhaite continuer
       response = input("🏁 Souhaitez-vous nettoyer une autre colonne ? (O/n): ").strip().lower()
 
-      if not response or response not in ["O", "o"]:
+      if response not in ["o", ""]:
         print("\n")
         break
 
