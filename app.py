@@ -104,17 +104,25 @@ def delete_column(df):
     if response not in ["o", ""]:
       break
 
-    col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
+    while True:
+      col_to_delete = input("💬 Indiquez le nom de la colonne à supprimer (ou 'fin' pour ignorer) : ").strip()
 
-    if col_to_delete == "fin":
-      return df
+      if col_to_delete == "fin":
+        return df
 
-    # Vérifier si la colonne existe dans le CSV
-    if col_to_delete in df.columns:
-      df.drop(columns=[col_to_delete], inplace=True)
-      print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
-    else:
-      print(f"⚠️ La colonne '{col_to_delete}' n'existe pas !")
+      # Vérifier si la colonne existe dans le DataFrame
+      if col_to_delete in df.columns:
+        df.drop(columns=[col_to_delete], inplace=True)
+        print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
+      else:
+        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas !")
+
+      # Demander si l'utilisateur souhaite supprimer une autre colonne après une suppression réussie
+      response = input("🏁 Souhaitez-vous supprimer une autre colonne ? (O/n): ").strip().lower()
+      if response == "n":
+        return df
+      if response not in ["o", ""]:
+        break
 
   return df
 
