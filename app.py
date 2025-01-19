@@ -365,6 +365,7 @@ def main():
   df = handle_modifications(df)
 
   # Afficher le tableau final
+  print("\n")
   print("=============================================")
   print("     📊 Tableau des nouvelles données 📊     ")
   print("=============================================")
