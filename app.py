@@ -243,6 +243,11 @@ def handle_modifications(df):
       print("\n")
       return df
 
+    # Vérifier si le nouveau nom de colonne est vide
+    if not new_col_name:
+      print("⚠️ Le nom de la colonne ne peut pas être vide. Veuillez essayer à nouveau !")
+      continue
+
     # Vérifier si le nouveau nom de colonne existe déjà
     if new_col_name in df.columns:
       print(f"⚠️ La colonne '{new_col_name}' existe déjà. Veuillez saisir un autre nom !")
@@ -380,4 +385,6 @@ if __name__ == "__main__":
     main()
   except KeyboardInterrupt:
     print("💥 Opération interrompue par l'utilisateur. Programme terminé.")
+  finally:
+    tkInstance.destroy()
     sys.exit(0)
