@@ -114,7 +114,7 @@ def delete_column(df):
       df.drop(columns=[col_to_delete], inplace=True)
       print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
     else:
-      print(f"⚠️ La colonne '{col_to_delete}' n'existe pas ! Veuillez réessayer.")
+      print(f"⚠️ La colonne '{col_to_delete}' n'existe pas !")
 
   return df
 
@@ -228,12 +228,15 @@ def handle_modifications(df):
   response = input("Souhaitez-vous modifier ces données ? (O/n): ").strip().lower()
 
   while response in ["o", ""]:
-    col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
+    while True:
+      col_to_modify = input("🏁 Quelle colonne souhaitez-vous modifier ? ").strip()
 
-    # Vérifier si la colonne existe
-    if col_to_modify not in df.columns:
-      print(f"⚠️ '{col_to_modify}' n'existe pas. Veuillez saisir un nom de colonne valide !")
-      continue
+      # Vérifier si la colonne existe
+      if col_to_modify not in df.columns:
+        print(f"⚠️ '{col_to_modify}' n'existe pas !")
+        continue
+      else:
+        break
 
     # Demander un nouveau nom pour la colonne
     new_col_name = input(f"💬 Nouveau nom pour la colonne '{col_to_modify}' (ou 'fin' pour ignorer) : ").strip()
@@ -243,12 +246,12 @@ def handle_modifications(df):
 
     # Vérifier si le nouveau nom de colonne est vide
     if not new_col_name:
-      print("⚠️ Le nom de la colonne ne peut pas être vide. Veuillez essayer à nouveau !")
+      print("⚠️ Le nom de la colonne ne peut pas être vide !")
       continue
 
     # Vérifier si le nouveau nom de colonne existe déjà
     if new_col_name in df.columns:
-      print(f"⚠️ La colonne '{new_col_name}' existe déjà. Veuillez saisir un autre nom !")
+      print(f"⚠️ La colonne '{new_col_name}' existe déjà !")
       continue
 
     # Renommer la colonne
