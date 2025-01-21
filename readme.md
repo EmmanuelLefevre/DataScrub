@@ -4,7 +4,7 @@
 - [INTRODUCTION](#introduction)
 - [PYTHON](#python)
 - [REQUIREMENTS](#requirements)
-- [GETTING STARTED](#getting_started)
+- [GETTING STARTED](#getting-started)
 
 ## INTRODUCTION
 DataScrub a pour objectif de nettoyer un jeu de données (DataFrame) au format CSV en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
