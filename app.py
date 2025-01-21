@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 from tabulate import tabulate
 from tkinter import Tk
-from tkinter.filedialog import askdirectory, askopenfilename, asksaveasfilename
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from dotenv import load_dotenv
 
 
