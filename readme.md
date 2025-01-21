@@ -4,7 +4,7 @@
 - [INTRODUCTION](#introduction)
 - [PYTHON](#python)
 - [REQUIREMENTS](#requirements)
-- [PROCEDURE](#procedure)
+- [GETTING STARTED](#getting_started)
 
 ## INTRODUCTION
 DataScrub a pour objectif de nettoyer un jeu de données (DataFrame) au format CSV en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
@@ -46,7 +46,7 @@ pip --version
 - Python-dotenv
 - Tabulate
 
-## PROCEDURE
+## GETTING STARTED
 1. Installer les librairies (en local dans python)
 ```bash
 pip install -r requirements.txt
