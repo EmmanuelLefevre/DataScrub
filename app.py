@@ -85,7 +85,7 @@ def save_file(df, existing_filename):
       print("\n")
       print(f"📄 {filename}{extension} enregistré sous: {save_path}")
     else:
-      print("❌ Aucune sauvegarde effectuée. Programme terminé.")
+      print("❌ Action annulée par l'utilisateur. Programme terminé.")
 
   except PermissionError:
     print("💣 Fichier ouvert, assurez-vous que celui-ci est fermé !")
