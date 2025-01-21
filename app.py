@@ -63,6 +63,7 @@ def select_file():
 ########################################################
 def save_file(df, existing_filename):
   try:
+    print("📂 Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
     save_path = asksaveasfilename(
       title="Enregistrer le fichier modifié",
       defaultextension=".csv",
