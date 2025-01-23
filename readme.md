@@ -5,6 +5,7 @@
 - [PYTHON](#python)
 - [REQUIREMENTS](#requirements)
 - [GETTING STARTED](#getting-started)
+- [TO DO](#to-do)
 
 ## INTRODUCTION
 DataScrub a pour objectif de nettoyer un jeu de données (DataFrame) au format CSV en éliminant les doublons et les valeurs manquantes. Il applique une série d'opérations de prétraitement :  
@@ -66,6 +67,12 @@ cp .env.template .env
 python app.py
 ```
 
+## TO DO
+- Supprimer les données aberrantes.
+- Contrôle champ de saisie "modifier une autre colonne" si saisi différente de O/n.
+- Le print "print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !{Style.RESET_ALL}")" pas toujours affiché.
+
 ***
 
 ⭐⭐⭐ I hope you enjoy it, if so don't hesitate to leave a like on this repository and on the [Dotfiles](https://github.com/EmmanuelLefevre/Dotfiles) one (click on the "Star" button at the top right of the repository page). Thanks 🤗
+
