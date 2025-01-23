@@ -42,6 +42,7 @@ pip --version
 ```
 
 ## REQUIREMENTS
+- Colorama
 - Pandas
 - Python-dotenv
 - Tabulate
