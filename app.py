@@ -71,17 +71,17 @@ def select_file():
 
 
 
-########################################################
-##### Fonction pour enregistrer le fichier modifié #####
-########################################################
-def save_file(df, existing_filename):
+###############################################################
+##### Fonction pour enregistrer le fichier modifié en CSV #####
+###############################################################
+def save_file_csv(df, existing_filename):
   try:
     print("📂 Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
     save_path = asksaveasfilename(
       title="Enregistrer le fichier modifié",
       defaultextension=".csv",
       filetypes=[("Fichiers CSV", "*.csv")],
-      initialfile=existing_filename,
+      initialfile=existing_filename.replace('.csv', "_nettoyé.csv"),
       initialdir=os.path.join(os.getcwd(), "data_frame")
     )
 
@@ -107,6 +107,46 @@ def save_file(df, existing_filename):
 
   except Exception as e:
     print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors de la sauvegarde : {e}{Style.RESET_ALL}")
+    return False
+
+
+
+################################################################
+##### Fonction pour enregistrer le fichier modifié en JSON #####
+################################################################
+def save_file_json(df, existing_filename):
+  try:
+    print("📂 Veuillez sélectionner un emplacement pour sauvegarder le fichier JSON.")
+    save_path = asksaveasfilename(
+      title="Enregistrer le fichier JSON",
+      defaultextension=".json",
+      filetypes=[("Fichiers JSON", "*.json")],
+      initialfile=existing_filename.replace('.csv', "_nettoyé.json"),
+      initialdir=os.path.join(os.getcwd(), "data_frame")
+    )
+
+    if save_path:
+      # Ajouter automatiquement l'extension ".json" si absente
+      if not save_path.endswith(".json"):
+        save_path += ".json"
+
+      # Extraire le nom de fichier et l'extension
+      filename, extension = os.path.splitext(os.path.basename(save_path))
+
+      # Sauvegarder le DataFrame au format JSON
+      df.to_json(save_path, orient='records', lines=True, force_ascii=False)
+      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
+      return True
+    else:
+      print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur.{Style.RESET_ALL}")
+      return False
+
+  except PermissionError:
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Fichier ouvert, assurez-vous que celui-ci est fermé !{Style.RESET_ALL}")
+    return False
+
+  except Exception as e:
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors de la sauvegarde JSON : {e}{Style.RESET_ALL}")
     return False
 
 
@@ -366,13 +406,16 @@ def main():
   initial_df = df.copy()
 
   # Afficher nombre de lignes du DataFrame
+  print("\n")
   print(f"{Style.BRIGHT}{Fore.MAGENTA}🔗 DataFrame: {len(df)} lignes{Style.RESET_ALL}")
+  print("\n")
 
   # Afficher les colonnes du CSV avec le type associé
   print(f"{Style.BRIGHT}{Fore.CYAN}========================={Style.RESET_ALL}")
   print(f"{Style.BRIGHT}{Fore.CYAN}📊 Tableau des données 📊{Style.RESET_ALL}")
   print(f"{Style.BRIGHT}{Fore.CYAN}========================={Style.RESET_ALL}")
-  print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type"], tablefmt="grid"))
+  tab = tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type"], tablefmt="grid")
+  print(f"{Style.BRIGHT}{Fore.CYAN}{tab}{Style.RESET_ALL}")
   print("\n")
 
   # Appels des fonctions
@@ -393,7 +436,14 @@ def main():
   if not df.equals(initial_df):
     # Extraire le nom de fichier à partir du chemin
     existing_filename = os.path.basename(file_path)
-    saved = save_file(df, existing_filename)
+
+    # Demander si l'utilisateur souhaite enregistrer en JSON ou CSV
+    save_format = input("💬 Souhaitez-vous sauvegarder en JSON au lieu de CSV ? (o/N): ").strip().lower()
+
+    if save_format in ["n", ""]:
+      saved = save_file_csv(df, existing_filename)
+    else:
+      saved = save_file_json(df, existing_filename)
 
     if saved:
       print(f"{Style.BRIGHT}{Fore.GREEN}👌 Toutes les modifications ont été effectuées. Programme terminé.{Style.RESET_ALL}")
