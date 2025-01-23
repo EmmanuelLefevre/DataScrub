@@ -140,7 +140,7 @@ def save_file_json(df, existing_filename):
       folder_path = os.path.dirname(save_path)
 
       # Sauvegarder le DataFrame au format JSON
-      df.to_json(save_path, orient='records', lines=True, force_ascii=False)
+      df.to_json(save_path, orient='records', indent=4, force_ascii=False)
       print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {folder_path}/{Style.RESET_ALL}")
       return True
     else:
