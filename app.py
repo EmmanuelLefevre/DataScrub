@@ -1,10 +1,12 @@
 import os
-import sys
 import pandas as pd
+import sys
+
+from colorama import Fore, Style, init
+from dotenv import load_dotenv
 from tabulate import tabulate
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from dotenv import load_dotenv
 
 
 
@@ -18,6 +20,17 @@ load_dotenv()
 tkInstance = Tk()
 tkInstance.withdraw()
 
+# Initialiser colorama
+init()
+
+
+##############################################
+##### Fonction pour quitter le programme #####
+##############################################
+def leave():
+  print(f"{Style.BRIGHT}{Fore.BLUE}👋 Programme terminé.{Style.RESET_ALL}")
+  sys.exit(0)
+
 
 
 #############################################################################
@@ -29,16 +42,16 @@ def select_file():
 
   # Vérifier si le dossier "data_frame" existe
   if not os.path.exists(data_dir):
-    print("⚠️ Le dossier 'data_frame' est introuvable... Créer le dossier et y ajouter un fichier au format CSV !")
-    sys.exit(0)
+    print(f"{Style.BRIGHT}{Fore.RED}⚠️ Le dossier 'data_frame' est introuvable... Créer le dossier et y ajouter un fichier au format CSV !{Style.RESET_ALL}")
+    leave()
 
   # Lister les fichiers CSV dans le dossier "data_frame"
   csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
 
   # Aucun fichier CSV trouvé
   if not csv_files:
-    print("⚠️ Aucun fichier CSV trouvé dans le dossier 'data_frame'. Ajouter un fichier avant de relancer le programme !")
-    sys.exit(0)
+    print(f"{Style.BRIGHT}{Fore.RED}⚠️ Aucun fichier CSV trouvé dans le dossier 'data_frame'. Ajouter un fichier avant de relancer le programme !{Style.RESET_ALL}")
+    leave()
 
   # Un seul fichier CSV trouvé => le charger automatiquement
   if len(csv_files) == 1:
@@ -51,8 +64,8 @@ def select_file():
   )
 
   if not file_path:
-    print("❌ Aucun fichier sélectionné.")
-    sys.exit(0)
+    print(f"{Style.BRIGHT}{Fore.RED}❌ Aucun fichier sélectionné.{Style.RESET_ALL}")
+    leave()
 
   return file_path
 
@@ -83,15 +96,15 @@ def save_file(df, existing_filename):
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
       print("\n")
-      print(f"📄 {filename}{extension} enregistré sous: {save_path}")
+      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
     else:
-      print("❌ Action annulée par l'utilisateur. Programme terminé.")
+      print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur. Programme terminé.{Style.RESET_ALL}")
 
   except PermissionError:
-    print("💣 Fichier ouvert, assurez-vous que celui-ci est fermé !")
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Fichier ouvert, assurez-vous que celui-ci est fermé !{Style.RESET_ALL}")
 
   except Exception as e:
-    print(f"💣 Erreur lors de la sauvegarde : {e}")
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors de la sauvegarde : {e}{Style.RESET_ALL}")
 
 
 
@@ -115,9 +128,9 @@ def delete_column(df):
       # Vérifier si la colonne existe dans le DataFrame
       if col_to_delete in df.columns:
         df.drop(columns=[col_to_delete], inplace=True)
-        print(f"✔️ Colonne '{col_to_delete}' supprimée avec succès.")
+        print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Colonne '{col_to_delete}' supprimée avec succès.{Style.RESET_ALL}")
       else:
-        print(f"⚠️ La colonne '{col_to_delete}' n'existe pas !")
+        print(f"{Style.BRIGHT}{Fore.RED}⚠️ La colonne '{col_to_delete}' n'existe pas !{Style.RESET_ALL}")
 
       # Demander si l'utilisateur souhaite supprimer une autre colonne après une suppression réussie
       response = input("🏁 Souhaitez-vous supprimer une autre colonne ? (O/n): ").strip().lower()
@@ -149,7 +162,7 @@ def handle_missing_values(df):
 
     # Si aucunes colonnes contenant des valeurs manquantes
     if not columns_with_missing:
-      print("✔️ Aucune colonne avec des valeurs manquantes.")
+      print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Aucune colonne avec des valeurs manquantes.{Style.RESET_ALL}")
       return df
 
     # Si des colonnes contiennent des valeurs manquantes
@@ -194,9 +207,9 @@ def handle_missing_values(df):
         total_rows_removed += rows_removed
 
         if rows_removed == 1:
-          print(f"✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.")
+          print(f"{Style.BRIGHT}{Fore.GREEN}✔️ {rows_removed} ligne avec une valeur manquante dans '{col_to_clean}' a été supprimée.{Style.RESET_ALL}")
         else:
-          print(f"✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.")
+          print(f"{Style.BRIGHT}{Fore.GREEN}✔️ {rows_removed} lignes avec une valeur manquante dans '{col_to_clean}' ont été supprimées.{Style.RESET_ALL}")
 
         # Recalculer les colonnes avec des valeurs manquantes et afficher le tableau mis à jour
         columns_with_missing = df.columns[df.isnull().any()].tolist()
@@ -209,11 +222,11 @@ def handle_missing_values(df):
           print(tabulate(missing_values_table, headers="keys", tablefmt="grid", showindex=False))
 
       else:
-        print(f"⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.")
+        print(f"{Style.BRIGHT}{Fore.RED}⚠️ La colonne '{col_to_clean}' n'a pas de valeurs manquantes ou n'existe pas.{Style.RESET_ALL}")
 
       # Vérifier si toutes les lignes ont été nettoyées
       if not df.isnull().any().any():
-        print("✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !")
+        print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Toutes les lignes avec des valeurs manquantes ont été supprimées !{Style.RESET_ALL}")
         break
 
       # Demander si l'utilisateur souhaite continuer
@@ -224,7 +237,7 @@ def handle_missing_values(df):
 
   # Afficher le cumul de lignes supprimées
   plural = "s" if total_rows_removed > 1 else ""
-  print(f"💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}")
+  print(f"{Style.BRIGHT}{Fore.GREEN}💪 {total_rows_removed} ligne{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_nullables}{Style.RESET_ALL}")
 
   return df
 
@@ -243,7 +256,7 @@ def handle_modifications(df):
 
       # Vérifier si la colonne existe
       if col_to_modify not in df.columns:
-        print(f"⚠️ '{col_to_modify}' n'existe pas !")
+        print(f"{Style.BRIGHT}{Fore.RED}⚠️ '{col_to_modify}' n'existe pas !{Style.RESET_ALL}")
         continue
       else:
         break
@@ -256,17 +269,17 @@ def handle_modifications(df):
 
     # Vérifier si le nouveau nom de colonne est vide
     if not new_col_name:
-      print("⚠️ Le nom de la colonne ne peut pas être vide !")
+      print(f"{Style.BRIGHT}{Fore.RED}⚠️ Le nom de la colonne ne peut pas être vide !{Style.RESET_ALL}")
       continue
 
     # Vérifier si le nouveau nom de colonne existe déjà
     if new_col_name in df.columns:
-      print(f"⚠️ La colonne '{new_col_name}' existe déjà !")
+      print(f"{Style.BRIGHT}{Fore.RED}⚠️ La colonne '{new_col_name}' existe déjà !{Style.RESET_ALL}")
       continue
 
     # Renommer la colonne
     df.rename(columns={col_to_modify: new_col_name}, inplace=True)
-    print(f"✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.")
+    print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Colonne '{col_to_modify}' modifiée en '{new_col_name}'.{Style.RESET_ALL}")
 
     # Proposer de modifier le type de la colonne
     modify_type = input(f"🏁 Souhaitez-vous modifier le type de la colonne '{new_col_name}' ? (o/N): ").strip().lower()
@@ -286,13 +299,13 @@ def handle_modifications(df):
       if new_col_type in ["int", "float", "str", "bool"]:
         try:
           df[new_col_name] = df[new_col_name].astype(new_col_type)
-          print(f"✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.")
+          print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Type de la colonne '{new_col_name}' modifié en '{new_col_type}'.{Style.RESET_ALL}")
         except ValueError:
-          print(f"💣 Impossible de convertir la colonne '{new_col_name}' en type '{new_col_type}' !")
+          print(f"{Style.BRIGHT}{Fore.RED}💣 Impossible de convertir la colonne '{new_col_name}' en type '{new_col_type}' !{Style.RESET_ALL}")
         except Exception as e:
-          print(f"💣 Erreur lors de la conversion : {e}")
+          print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors de la conversion : {e}{Style.RESET_ALL}")
       else:
-        print("⚠️ Type de données non reconnu. Aucune modification effectuée !")
+        print(f"{Style.BRIGHT}{Fore.RED}⚠️ Type de données non reconnu. Aucune modification effectuée !{Style.RESET_ALL}")
 
     # Demander si l'utilisateur souhaite modifier une autre colonne
     response = input("🏁 Souhaitez-vous modifier une autre colonne ? (O/n) : ").strip().lower()
@@ -320,10 +333,10 @@ def handle_duplicates(df):
     duplicates_removed = before_cleaning_duplicates - after_cleaning_duplicates
 
     if before_cleaning_duplicates == after_cleaning_duplicates:
-      print("✔️ Aucun doublon trouvé.")
+      print(f"{Style.BRIGHT}{Fore.GREEN}✔️ Aucun doublon trouvé.{Style.RESET_ALL}")
     else:
       plural = "s" if duplicates_removed > 1 else ""
-      print(f"✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}")
+      print(f"{Style.BRIGHT}{Fore.GREEN}✔️ {duplicates_removed} doublon{plural} supprimé{plural}. Nombre de lignes restantes : {after_cleaning_duplicates}{Style.RESET_ALL}")
 
   return df
 
@@ -340,22 +353,22 @@ def main():
   try:
     df = pd.read_csv(file_path, encoding='utf-8')
   except UnicodeDecodeError:
-    print("💣 Erreur de décodage. Tentative avec ISO-8859-1 ...")
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur de décodage. Tentative avec ISO-8859-1 ...{Style.RESET_ALL}")
     df = pd.read_csv(file_path, encoding='ISO-8859-1')
   except Exception as e:
-    print(f"💣 Erreur lors du chargement du fichier CSV : {e}")
-    sys.exit(0)
+    print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors du chargement du fichier CSV : {e}{Style.RESET_ALL}")
+    leave()
 
   # Créer une copie du DataFrame initial pour détecter les modifications
   initial_df = df.copy()
 
   # Afficher nombre de lignes du DataFrame
-  print(f"🔗 DataFrame: {len(df)} lignes")
+  print(f"{Style.BRIGHT}{Fore.MAGENTA}🔗 DataFrame: {len(df)} lignes{Style.RESET_ALL}")
 
   # Afficher les colonnes du CSV avec le type associé
-  print("=========================")
-  print("📊 Tableau des données 📊")
-  print("=========================")
+  print(f"{Style.BRIGHT}{Fore.CYAN}========================={Style.RESET_ALL}")
+  print(f"{Style.BRIGHT}{Fore.CYAN}📊 Tableau des données 📊{Style.RESET_ALL}")
+  print(f"{Style.BRIGHT}{Fore.CYAN}========================={Style.RESET_ALL}")
   print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type"], tablefmt="grid"))
   print("\n")
 
@@ -367,9 +380,9 @@ def main():
 
   # Afficher le tableau final
   print("\n")
-  print("=============================================")
-  print("     📊 Tableau des nouvelles données 📊     ")
-  print("=============================================")
+  print(f"{Style.BRIGHT}{Fore.CYAN}============================================={Style.RESET_ALL}")
+  print(f"{Style.BRIGHT}{Fore.CYAN}     📊 Tableau des nouvelles données 📊     {Style.RESET_ALL}")
+  print(f"{Style.BRIGHT}{Fore.CYAN}============================================={Style.RESET_ALL}")
   print(tabulate(df.dtypes.reset_index(), headers=["Colonne", "Type de données"], tablefmt="grid"))
 
 
@@ -379,10 +392,10 @@ def main():
     existing_filename = os.path.basename(file_path)
     save_file(df, existing_filename)
     print("\n")
-    print("👌 Toutes les modifications ont été effectuées. Programme terminé.")
+    print(f"{Style.BRIGHT}{Fore.GREEN}👌 Toutes les modifications ont été effectuées. Programme terminé.{Style.RESET_ALL}")
   else:
     print("\n")
-    print("❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...")
+    print(f"{Style.BRIGHT}{Fore.RED}❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...{Style.RESET_ALL}")
 
 
 
@@ -393,7 +406,7 @@ if __name__ == "__main__":
   try:
     main()
   except KeyboardInterrupt:
-    print("👋 Opération interrompue par l'utilisateur. Programme terminé.")
+    print(f"{Style.BRIGHT}{Fore.BLUE}👋 Opération interrompue par l'utilisateur. Programme terminé.{Style.RESET_ALL}")
   finally:
     tkInstance.quit()
     tkInstance.destroy()
