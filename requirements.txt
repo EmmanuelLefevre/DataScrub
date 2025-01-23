@@ -1,3 +1,4 @@
+colorama
 python-dotenv
 pandas
 tabulate
