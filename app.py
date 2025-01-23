@@ -95,7 +95,6 @@ def save_file(df, existing_filename):
 
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
-      print("\n")
       print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
       return True
     else:
@@ -397,13 +396,10 @@ def main():
     saved = save_file(df, existing_filename)
 
     if saved:
-      print("\n")
       print(f"{Style.BRIGHT}{Fore.GREEN}👌 Toutes les modifications ont été effectuées. Programme terminé.{Style.RESET_ALL}")
     else:
-      print("\n")
       leave()
   else:
-    print("\n")
     print(f"{Style.BRIGHT}{Fore.RED}❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...{Style.RESET_ALL}")
 
 
