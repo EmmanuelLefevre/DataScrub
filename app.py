@@ -93,9 +93,12 @@ def save_file_csv(df, existing_filename):
       # Extraire le nom de fichier et l'extension
       filename, extension = os.path.splitext(os.path.basename(save_path))
 
+      # Extraire path
+      folder_path = os.path.dirname(save_path)
+
       # Sauvegarder le DataFrame au chemin sélectionné
       df.to_csv(save_path, index=False)
-      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
+      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {folder_path}/{Style.RESET_ALL}")
       return True
     else:
       print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur.{Style.RESET_ALL}")
@@ -133,9 +136,12 @@ def save_file_json(df, existing_filename):
       # Extraire le nom de fichier et l'extension
       filename, extension = os.path.splitext(os.path.basename(save_path))
 
+      # Extraire path
+      folder_path = os.path.dirname(save_path)
+
       # Sauvegarder le DataFrame au format JSON
       df.to_json(save_path, orient='records', lines=True, force_ascii=False)
-      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
+      print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {folder_path}/{Style.RESET_ALL}")
       return True
     else:
       print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur.{Style.RESET_ALL}")
