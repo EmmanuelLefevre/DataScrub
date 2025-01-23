@@ -97,14 +97,18 @@ def save_file(df, existing_filename):
       df.to_csv(save_path, index=False)
       print("\n")
       print(f"{Style.BRIGHT}{Fore.GREEN}📄 {filename}{extension} enregistré sous: {save_path}{Style.RESET_ALL}")
+      return True
     else:
-      print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur. Programme terminé.{Style.RESET_ALL}")
+      print(f"{Style.BRIGHT}{Fore.RED}❌ Action annulée par l'utilisateur.{Style.RESET_ALL}")
+      return False
 
   except PermissionError:
     print(f"{Style.BRIGHT}{Fore.RED}💣 Fichier ouvert, assurez-vous que celui-ci est fermé !{Style.RESET_ALL}")
+    return False
 
   except Exception as e:
     print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur lors de la sauvegarde : {e}{Style.RESET_ALL}")
+    return False
 
 
 
@@ -390,9 +394,14 @@ def main():
   if not df.equals(initial_df):
     # Extraire le nom de fichier à partir du chemin
     existing_filename = os.path.basename(file_path)
-    save_file(df, existing_filename)
-    print("\n")
-    print(f"{Style.BRIGHT}{Fore.GREEN}👌 Toutes les modifications ont été effectuées. Programme terminé.{Style.RESET_ALL}")
+    saved = save_file(df, existing_filename)
+
+    if saved:
+      print("\n")
+      print(f"{Style.BRIGHT}{Fore.GREEN}👌 Toutes les modifications ont été effectuées. Programme terminé.{Style.RESET_ALL}")
+    else:
+      print("\n")
+      leave()
   else:
     print("\n")
     print(f"{Style.BRIGHT}{Fore.RED}❌ Aucune modification n'a été effectuée. Aucune sauvegarde nécessaire...{Style.RESET_ALL}")
