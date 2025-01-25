@@ -16,31 +16,7 @@ Ce nettoyage est essentiel pour garantir la qualité et la fiabilité des analys
 De plus il est possible de changer le nom des colonnes ainsi que leur type associé.
 
 ## PYTHON
-[Télécharger Python 3.13.1](https://www.python.org/downloads/)  
-
-⚠️ "Customize installation"  
-
-Cocher les options =>  
-- "pip"  
-- "tcl/tk and IDLE"  
-- "py launcher"  
-
-![Installation Python 1](https://github.com/EmmanuelLefevre/MarkdownImg/blob/main/py_install.png)  
-
-Puis dans la seconde fenêtre =>  
-- "Associate files with Python"  
-- "Add Python to environment variables".  
-
-![Installation Python 2](https://github.com/EmmanuelLefevre/MarkdownImg/blob/main/py_install_2.png)  
-
-- Vérifier l'installation de Python
-```bash
-python --version
-```
-- Vérifier l'installation de Pip
-```bash
-pip --version
-```
+[Guide d'installation Python](https://github.com/EmmanuelLefevre/Documentations/blob/master/Tutorials/python_install.md)  
 
 ## REQUIREMENTS
 - Colorama
