@@ -81,7 +81,7 @@ def save_file_csv(df, existing_filename):
       title="Enregistrer le fichier modifié",
       defaultextension=".csv",
       filetypes=[("Fichiers CSV", "*.csv")],
-      initialfile=existing_filename.replace('.csv', "_nettoyé.csv"),
+      initialfile=existing_filename.replace('.csv', "_cleaned.csv"),
       initialdir=os.path.join(os.getcwd(), "data_frame")
     )
 
@@ -124,7 +124,7 @@ def save_file_json(df, existing_filename):
       title="Enregistrer le fichier JSON",
       defaultextension=".json",
       filetypes=[("Fichiers JSON", "*.json")],
-      initialfile=existing_filename.replace('.csv', "_nettoyé.json"),
+      initialfile=existing_filename.replace('.csv', "_cleaned.json"),
       initialdir=os.path.join(os.getcwd(), "data_frame")
     )
 
