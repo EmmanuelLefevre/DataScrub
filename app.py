@@ -400,7 +400,7 @@ def main():
 
   # Charger le fichier CSV
   try:
-    df = pd.read_csv(file_path, encoding='utf-8')
+    df = pd.read_csv(file_path, sep=None, on_bad_lines="skip", encoding='utf-8')
   except UnicodeDecodeError:
     print(f"{Style.BRIGHT}{Fore.RED}💣 Erreur de décodage. Tentative avec ISO-8859-1 ...{Style.RESET_ALL}")
     df = pd.read_csv(file_path, encoding='ISO-8859-1')
